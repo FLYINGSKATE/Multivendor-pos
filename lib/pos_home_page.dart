@@ -1,9 +1,8 @@
-import 'dart:html';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'dart:math' as math;
+import 'package:rdipos/ProductModel.dart';
+import 'package:rdipos/inventory.dart';
+
 
 class POSHomePage extends StatefulWidget {
   const POSHomePage({Key? key}) : super(key: key);
@@ -14,12 +13,21 @@ class POSHomePage extends StatefulWidget {
 
 class _POSHomePageState extends State<POSHomePage> {
   List<int> text = [1,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4];
+
+  List<ProductModel> productOnList = [
+    ProductModel("Pepsi", 10.0),
+    ProductModel("Mazza", 10.0),
+    ProductModel("Coca Cola", 10.0),
+    ProductModel("Lays", 5.0),
+    ProductModel("Milki Bikis", 20.0),
+    ProductModel("Broccoli", 40.0),
+  ];
+
   double totalValue = 0.0;
 
   @override
   initState() {
     super.initState();
-    goFullScreen();
   }
 
   @override
@@ -41,19 +49,29 @@ class _POSHomePageState extends State<POSHomePage> {
       ),
       body: OrientationBuilder(
         builder: (context, orientation) {
-          if(orientation==Orientation.portrait){
-            return Column(
+          if(orientation==Orientation.landscape){
+            return Row(
               children: [
-                ProductLeftPanel(),
-                NumberPadRightPanel(),
+                Expanded(
+                  flex: 6,
+                  child: TopPanel(),
+                ),
+                Expanded(
+                    flex: 5,
+                    child: BottomPanel()),
               ],
             );
           }
           else{
-            return Row(
+            return Column(
               children: [
-                ProductLeftPanel(),
-                NumberPadRightPanel(),
+                Expanded(
+                  flex: 6,
+                  child: TopPanel(),
+                ),
+                Expanded(
+                    flex: 5,
+                    child: BottomPanel()),
               ],
             );
           }
@@ -69,7 +87,7 @@ class _POSHomePageState extends State<POSHomePage> {
           child: Column(
             children: [
               for ( var i in text ) Column(
-                children: [SizedBox(height: 20,),ProductTemplate()],
+                children: [SizedBox(height: 20,),Product()],
               )
             ],
           ),
@@ -77,345 +95,6 @@ class _POSHomePageState extends State<POSHomePage> {
     );
   }
 
-  ProductTemplate(){
-    return Container(
-      padding: EdgeInsets.all(10),
-      width: MediaQuery.of(context).size.width/2.2,
-      decoration: BoxDecoration(
-        color: Colors.black38,
-        borderRadius: BorderRadius.all(Radius.circular(5)),
-      ),
-      child: Neumorphic(
-        style: NeumorphicStyle(
-        shape: NeumorphicShape.concave,
-        boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(12)),
-        depth: 8,
-        lightSource: LightSource.topLeft,
-        ),
-        child:Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: Image.asset('assets/images/sampletee.jpg'),),
-              Expanded(
-                flex: 7,
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                // Figma Flutter Generator TshirtWidget - TEXT
-                Text('T-Shirt', textAlign: TextAlign.left, style: TextStyle(
-                    color: Color.fromRGBO(0, 0, 0, 1),
-                    fontFamily: 'Lato',
-                    fontSize: 24,
-                    letterSpacing: 0 /*percentages not used in flutter. defaulting to zero*/,
-                    fontWeight: FontWeight.normal,
-                    height: 1
-                ),),
-                // Figma Flutter Generator 2Widget - TEXT
-                Text('2\$', textAlign: TextAlign.left, style: TextStyle(
-                    color: Color.fromRGBO(0, 0, 0, 1),
-                    fontFamily: 'Lato',
-                    fontSize: 16,
-                    letterSpacing: 0 /*percentages not used in flutter. defaulting to zero*/,
-                    fontWeight: FontWeight.normal,
-                    height: 1
-                ),),
-              ],
-            ),
-          ),
-          Divider(height: 10),
-          Expanded(
-            flex: 1,
-            child: Column(
-              children: [
-                // Figma Flutter Generator QtyWidget - TEXT
-                Text('QTY', textAlign: TextAlign.left, style: TextStyle(
-                    color: Color.fromRGBO(0, 0, 0, 1),
-                    fontFamily: 'Lato',
-                    fontSize: 16,
-                    letterSpacing: 0 /*percentages not used in flutter. defaulting to zero*/,
-                    fontWeight: FontWeight.normal,
-                    height: 1
-                ),),
-                // Figma Flutter Generator 10Widget - TEXT
-                Text('10', textAlign: TextAlign.left, style: TextStyle(
-                    color: Color.fromRGBO(0, 0, 0, 1),
-                    fontFamily: 'Lato',
-                    fontSize: 16,
-                    letterSpacing: 0 /*percentages not used in flutter. defaulting to zero*/,
-                    fontWeight: FontWeight.normal,
-                    height: 1
-                ),),
-              ],
-            ),
-          ),
-        ],
-      )
-    ));
-  }
-
-  NumberPadRightPanel(){
-    return Container(
-      width: MediaQuery.of(context).size.width/2,
-      child: Center(
-        child: Neumorphic(
-            style: NeumorphicStyle(
-                shape: NeumorphicShape.concave,
-                boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(12)),
-                depth: 8,
-                lightSource: LightSource.topLeft,
-
-            ),
-            child: Column(
-              children: [
-                Row(children: [
-                  Expanded(
-                    flex: 1,
-                    child: ShowNumberButton(),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: HomeButton(),
-                  ),
-                  Expanded(
-                    flex: 10,
-                    child: SearchBox(),
-                  )
-                ],),
-                Padding(padding: EdgeInsets.all(20),
-                  child:NumberPad(),
-                )
-              ],
-            ),
-        ),
-      ),
-    );
-  }
-
-  NumberPad(){
-    return Neumorphic(
-        style: NeumorphicStyle(
-            shape: NeumorphicShape.concave,
-            boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(12)),
-            depth: 8,
-            lightSource: LightSource.topLeft,
-            color: Colors.black
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  NeumorphicButton(
-                    style: NeumorphicStyle(
-                        border: NeumorphicBorder(
-                          color: Color(0x33000000),
-                          width: 0.8,
-                        )
-                    ),
-                    onPressed: (){
-                      addToTotal(1);
-                    },
-                    child:CustomText("1") ,
-                  ),
-                  NeumorphicButton(
-                    style: NeumorphicStyle(
-                        border: NeumorphicBorder(
-                          color: Color(0x33000000),
-                          width: 0.8,
-                        )
-                    ),
-                    child:CustomText("2") ,
-                    onPressed: (){
-                      addToTotal(2);
-                    },
-                  ),
-                  NeumorphicButton(
-                    style: NeumorphicStyle(
-                        border: NeumorphicBorder(
-                          color: Color(0x33000000),
-                          width: 0.8,
-                        )
-                    ),
-                    onPressed: (){
-                      addToTotal(3);
-                    },
-                    child:CustomText("3") ,
-                  ),
-                  NeumorphicButton(
-                    style: NeumorphicStyle(
-                        border: NeumorphicBorder(
-                          color: Color(0x33000000),
-                          width: 0.8,
-                        )
-                    ),
-                    onPressed: (){
-                    },
-                    child:CustomText("Qty") ,
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  NeumorphicButton(
-                    style: NeumorphicStyle(
-                        border: NeumorphicBorder(
-                          color: Color(0x33000000),
-                          width: 0.8,
-                        )
-                    ),
-                    child:CustomText("4") ,
-                    onPressed: (){
-                      addToTotal(4);
-                    },
-                  ),
-                  NeumorphicButton(
-                    style: NeumorphicStyle(
-                        border: NeumorphicBorder(
-                          color: Color(0x33000000),
-                          width: 0.8,
-                        )
-                    ),
-                    child:CustomText("5") ,
-                    onPressed: (){
-                      addToTotal(5);
-                    },
-                  ),
-                  NeumorphicButton(
-                    style: NeumorphicStyle(
-                        border: NeumorphicBorder(
-                          color: Color(0x33000000),
-                          width: 0.8,
-                        )
-                    ),
-                    child:CustomText("6") ,
-                    onPressed: (){
-                      addToTotal(6);
-                    },
-                  ),
-                  NeumorphicButton(
-                    style: NeumorphicStyle(
-                        border: NeumorphicBorder(
-                          color: Color(0x33000000),
-                          width: 0.8,
-                        )
-                    ),
-                    onPressed: (){
-                    },
-                    child:CustomText("Disc.") ,
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  NeumorphicButton(
-                    style: NeumorphicStyle(
-                        border: NeumorphicBorder(
-                          color: Color(0x33000000),
-                          width: 0.8,
-                        )
-                    ),
-                    child:CustomText("7") ,
-                    onPressed: (){
-                      addToTotal(7);
-                    },
-                  ),
-                  NeumorphicButton(
-                    style: NeumorphicStyle(
-                        border: NeumorphicBorder(
-                          color: Color(0x33000000),
-                          width: 0.8,
-                        )
-                    ),
-                    child:CustomText("8") ,
-                    onPressed: (){
-                      addToTotal(8);
-                    },
-                  ),
-                  NeumorphicButton(
-                    style: NeumorphicStyle(
-                        border: NeumorphicBorder(
-                          color: Color(0x33000000),
-                          width: 0.8,
-                        )
-                    ),
-                    child:CustomText("9") ,
-                    onPressed: (){
-                      addToTotal(9);
-                    },
-                  ),
-                  NeumorphicButton(
-                    style: NeumorphicStyle(
-                        border: NeumorphicBorder(
-                          color: Color(0x33000000),
-                          width: 0.8,
-                        )
-                    ),
-                    onPressed: (){
-                    },
-                    child:CustomText("Price") ,
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  NeumorphicButton(
-                    style: NeumorphicStyle(
-                        border: NeumorphicBorder(
-                          color: Color(0x33000000),
-                          width: 0.8,
-                        )
-                    ),
-                    child:CustomText("+") ,
-                  ),
-                  NeumorphicButton(
-                    onPressed: (){
-                      print("zero pressed");
-                      addToTotal(0);
-                    },
-                    style: NeumorphicStyle(
-                        border: NeumorphicBorder(
-                          color: Color(0x33000000),
-                          width: 0.8,
-                        )
-                    ),
-                    child:CustomText("0") ,
-                  ),
-                  NeumorphicButton(
-                    style: NeumorphicStyle(
-                        border: NeumorphicBorder(
-                          color: Color(0x33000000),
-                          width: 0.8,
-                        )
-                    ),
-                    onPressed: (){
-                      addToTotal(99);
-                    },
-                    child:CustomText(" . "),
-                  ),
-                  NeumorphicButton(
-                    style: NeumorphicStyle(
-                        border: NeumorphicBorder(
-                          color: Color(0x33000000),
-                          width: 0.8,
-                        )
-                    ),
-                    onPressed: (){
-                    },
-                    child:Icon(Icons.arrow_back_ios) ,
-                  ),
-                ],
-              ),
-
-            ],
-          ),
-        )
-    );
-  }
-
-  Widget CustomText(String value){
-    return Text(value,style: TextStyle(fontSize: 40),);
-  }
 
   void addToTotal(int i) {
     if(i==0){
@@ -427,21 +106,6 @@ class _POSHomePageState extends State<POSHomePage> {
       totalValue += i;
       print(totalValue);
     }
-
-  }
-
-  SearchBox() {
-    return TextField(
-      decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(100.0),
-          ),
-          filled: true,
-          prefixIcon:Icon(Icons.search) ,
-          hintStyle: TextStyle(color: Colors.grey[800]),
-          hintText: "Type in your text",
-          fillColor: Colors.white),
-    );
   }
 
   HomeButton(){
@@ -472,7 +136,252 @@ class _POSHomePageState extends State<POSHomePage> {
     );
   }
 
-  void goFullScreen() {
-    document.documentElement!.requestFullscreen();
+  TopPanel() {
+    return Container(
+      color: Colors.white10,
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        children: [
+          BillHeader(),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  for ( var i in text )Product(),
+                ],
+              ),
+            ),
+          ),
+          TotalFooter(),
+        ],
+      ),
+    );
+  }
+
+  Widget BillHeader() {
+    return Row(
+      children: [
+        Expanded(
+          flex: 5,
+          child: Text('Products', textAlign: TextAlign.left, style: TextStyle(
+              color: Color.fromRGBO(38, 50, 56, 1),
+              fontFamily: 'Inter',
+              fontSize: 28,
+              letterSpacing: 0.20000001788139343,
+              fontWeight: FontWeight.bold,
+              height: 1.400000028610228
+          ),),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text('Quantity', textAlign: TextAlign.center, style: TextStyle(
+              color: Color.fromRGBO(38, 50, 56, 1),
+              fontFamily: 'Inter',
+              fontSize: 20,
+              letterSpacing: 0.20000001788139343,
+              fontWeight: FontWeight.bold,
+              height: 1.400000028610228
+          ),),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text('Price', textAlign: TextAlign.center, style: TextStyle(
+              color: Color.fromRGBO(38, 50, 56, 1),
+              fontFamily: 'Inter',
+              fontSize: 20,
+              letterSpacing: 0.20000001788139343,
+              fontWeight: FontWeight.bold,
+              height: 1.400000028610228
+          ),),
+        ),
+      ],
+    );
+  }
+  Widget Product(){
+    return Row(
+      children: [
+        Expanded(
+          flex: 5,
+          child: Text('Pepsi Cola', textAlign: TextAlign.left, style: TextStyle(
+              color: Color.fromRGBO(38, 50, 56, 1),
+              fontFamily: 'Inter',
+              fontSize: 24,
+              letterSpacing: 0.20000001788139343,
+              fontWeight: FontWeight.normal,
+              height: 1.400000028610228
+          ),),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text('x 10', textAlign: TextAlign.center, style: TextStyle(
+              color: Color.fromRGBO(38, 50, 56, 1),
+              fontFamily: 'Inter',
+              fontSize: 16,
+              letterSpacing: 0.20000001788139343,
+              fontWeight: FontWeight.normal,
+              height: 1.400000028610228
+          ),),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text('10 ₹', textAlign: TextAlign.center, style: TextStyle(
+              color: Color.fromRGBO(38, 50, 56, 1),
+              fontFamily: 'Inter',
+              fontSize: 16,
+              letterSpacing: 0.20000001788139343,
+              fontWeight: FontWeight.normal,
+              height: 1.400000028610228
+          ),),
+        ),
+      ],
+    );
+  }
+  Widget TotalFooter(){
+    return Row(
+      children: [
+        Expanded(
+          flex: 5,
+          child: Text('Total', textAlign: TextAlign.left, style: TextStyle(
+              color: Color.fromRGBO(38, 50, 56, 1),
+              fontFamily: 'Inter',
+              fontSize: 28,
+              letterSpacing: 0.20000001788139343,
+              fontWeight: FontWeight.bold,
+              height: 1.400000028610228
+          ),),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text('x 100', textAlign: TextAlign.center, style: TextStyle(
+              color: Color.fromRGBO(38, 50, 56, 1),
+              fontFamily: 'Inter',
+              fontSize: 20,
+              letterSpacing: 0.20000001788139343,
+              fontWeight: FontWeight.bold,
+              height: 1.400000028610228
+          ),),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text('100 ₹', textAlign: TextAlign.center, style: TextStyle(
+              color: Color.fromRGBO(38, 50, 56, 1),
+              fontFamily: 'Inter',
+              fontSize: 20,
+              letterSpacing: 0.20000001788139343,
+              fontWeight: FontWeight.bold,
+              height: 1.400000028610228
+          ),),
+        ),
+      ],
+    );
+  }
+
+  Widget BottomPanel() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Row(
+              children: [
+                Expanded(
+                  flex:1,
+                  child: Container(
+                    color: Colors.black,
+                    child: MaterialButton(
+                      onPressed: () => {Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => InventoryPanel()),
+                      )},
+                      color: Colors.black,
+                      padding: EdgeInsets.all(10.0),
+                      child: Column( // Replace with a Row for horizontal icon + text
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(Icons.inventory,color: Colors.red,size: 40,),
+                          SizedBox(height: 10,),
+                          Text('Add From Inventory', textAlign: TextAlign.center, style: TextStyle(
+                              color: Colors.red,
+                              fontFamily: 'Inter',
+                              fontSize: 20,
+                              letterSpacing: 0.20000001788139343,
+                              fontWeight: FontWeight.normal,
+                              height: 1.400000028610228
+                          ),),
+                        ],
+                      ),
+                    ),
+                    //child: RaisedButton.icon(color:Colors.black,onPressed: (){print("OLA");}, icon: Icon(Icons.inventory,color: Colors.red,), label: Text("Add From Inventory",style: TextStyle(color: Colors.red),)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Row(
+              children: [
+                Expanded(
+                  flex:1,
+                  child: Container(
+                    color: Colors.black,
+                    child: MaterialButton(
+                      onPressed: () => {print("")},
+                      color: Colors.black,
+                      padding: EdgeInsets.all(10.0),
+                      child: Column( // Replace with a Row for horizontal icon + text
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(Icons.person,color: Colors.red,size: 40,),
+                          SizedBox(height: 10,),
+                          Text('My Profile', textAlign: TextAlign.center, style: TextStyle(
+                              color: Colors.red,
+                              fontFamily: 'Inter',
+                              fontSize: 20,
+                              letterSpacing: 0.20000001788139343,
+                              fontWeight: FontWeight.normal,
+                              height: 1.400000028610228
+                          ),),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.black,
+                    child: MaterialButton(
+                      onPressed: () => {print("")},
+                      color: Colors.black,
+                      padding: EdgeInsets.all(10.0),
+                      child: Column( // Replace with a Row for horizontal icon + text
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(Icons.list_alt_outlined,color: Colors.red,size: 40,),
+                          SizedBox(height: 10,),
+                          Text('Proceed For Billing', textAlign: TextAlign.center, style: TextStyle(
+                              color: Colors.red,
+                              fontFamily: 'Inter',
+                              fontSize: 20,
+                              letterSpacing: 0.20000001788139343,
+                              fontWeight: FontWeight.normal,
+                              height: 1.400000028610228
+                          ),),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
