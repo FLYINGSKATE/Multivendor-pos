@@ -33,12 +33,6 @@ class _InventoryPanelState extends State<InventoryPanel> {
                     ProductListCard(),SizedBox(height: 5,),
                     ProductListCard(),SizedBox(height: 5,),
                     ProductListCard(),
-
-
-
-
-
-
                     SizedBox(height: 5,),
                     ProductListCard(),
                     SizedBox(height: 5,),
