@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "614410126179",
+    "firebase_url": "https://multivendor-pos-1267c-default-rtdb.firebaseio.com",
+    "project_id": "multivendor-pos-1267c",
+    "storage_bucket": "multivendor-pos-1267c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:614410126179:android:991612f4563a588c40c956",
+        "android_client_info": {
+          "package_name": "com.example.rdipos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "614410126179-f5m8p5dr2as0k8nki5oupfhi88fohbjt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDHl6_EYGWJRFKLDDhf1Nu0RzTyw1FzQk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "614410126179-f5m8p5dr2as0k8nki5oupfhi88fohbjt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

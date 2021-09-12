@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class InventoryPanel extends StatefulWidget {
@@ -8,6 +9,9 @@ class InventoryPanel extends StatefulWidget {
 }
 
 class _InventoryPanelState extends State<InventoryPanel> {
+
+  late int County = 1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,27 +29,6 @@ class _InventoryPanelState extends State<InventoryPanel> {
                   children: [
                     SizedBox(height: 5,),
                     ProductListCard(),
-                    SizedBox(height: 5,),
-                    ProductListCard(),SizedBox(height: 5,),
-                    ProductListCard(),SizedBox(height: 5,),
-                    ProductListCard(),SizedBox(height: 5,),
-                    ProductListCard(),SizedBox(height: 5,),
-                    ProductListCard(),SizedBox(height: 5,),
-                    ProductListCard(),SizedBox(height: 5,),
-                    ProductListCard(),
-                    SizedBox(height: 5,),
-                    ProductListCard(),
-                    SizedBox(height: 5,),
-                    ProductListCard(),
-                    SizedBox(height: 5,),
-                    ProductListCard(),
-                    SizedBox(height: 5,),
-                    ProductListCard(),
-                    SizedBox(height: 5,),
-                    ProductListCard(),
-                    SizedBox(height: 5,),
-                    ProductListCard(),
-
                   ],
                 ),
               ),
@@ -54,7 +37,9 @@ class _InventoryPanelState extends State<InventoryPanel> {
         ),
       ) ,
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () {
+          getDocs();
+        },
         backgroundColor: Colors.red,
         icon: Icon(Icons.add),
         label: Text("Add to Bill"),
@@ -74,7 +59,7 @@ class _InventoryPanelState extends State<InventoryPanel> {
           focusColor: Colors.red,
           focusedBorder:OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.red, width: 2.0),
-            borderRadius: BorderRadius.circular(25.0),
+            borderRadius: BorderRadius.circular(100.0),
 
           ),
           prefixIcon:Icon(Icons.search,size: 40,color: Colors.white,),
@@ -83,6 +68,14 @@ class _InventoryPanelState extends State<InventoryPanel> {
           fillColor: Colors.black
       ),
     );
+  }
+
+  Future getDocs() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("/Aflatoon General Store").get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      var a = querySnapshot.docs[i];
+      print(a.data());
+    }
   }
 
   ProductListCard() {
@@ -127,15 +120,15 @@ class _InventoryPanelState extends State<InventoryPanel> {
   }
 
   QuantityCounter() {
-    int value = 1;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ElevatedButton(
           onPressed: () {
-            value = value+1;
+            County = County+1;
             setState(() {
-              print(value);
+              print(County);
             });
           },
           child: Text("+",style: TextStyle(color:Colors.white,fontSize: 28)),
@@ -149,16 +142,16 @@ class _InventoryPanelState extends State<InventoryPanel> {
         Container(
           width: 60,
           height: 60,
-          child: Center(child: Text(value.toString(),style: TextStyle(fontSize: 28),)),
+          child: Center(child: Text("$County",style: TextStyle(fontSize: 28),)),
           decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Color(0xFFe0f2f1)),
         ),
         ElevatedButton(
           onPressed: () {
-            value--;
+            County--;
             setState(() {
-              print(value);
+              print(County);
             });
           },
           child: Text("-",style: TextStyle(color:Colors.white,fontSize: 28)),

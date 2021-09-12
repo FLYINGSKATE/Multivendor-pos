@@ -176,7 +176,7 @@ class _POSHomePageState extends State<POSHomePage> {
           flex: 2,
           child: Text('Quantity', textAlign: TextAlign.center, style: TextStyle(
               color: Color.fromRGBO(38, 50, 56, 1),
-              fontFamily: 'Inter',
+              fontFamily: 'Intern',
               fontSize: 20,
               letterSpacing: 0.20000001788139343,
               fontWeight: FontWeight.bold,
@@ -328,7 +328,9 @@ class _POSHomePageState extends State<POSHomePage> {
                   child: Container(
                     color: Colors.black,
                     child: MaterialButton(
-                      onPressed: () => {print("")},
+                      onPressed: (){
+
+                      },
                       color: Colors.black,
                       padding: EdgeInsets.all(10.0),
                       child: Column( // Replace with a Row for horizontal icon + text

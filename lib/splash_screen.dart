@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:rdipos/BarCodeScreen.dart';
+import 'package:rdipos/inventory.dart';
 
 import 'POSOutletScreens/pos_home_page.dart';
 
@@ -22,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Duration(seconds: 0),
             () =>
             Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (BuildContext context) => HomePage())));
+                builder: (BuildContext context) => InventoryPanel())));
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -32,6 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset('assets/images/rdilogo.png'),
+              SizedBox(height: 60,),
               CircularProgressIndicator(color: Colors.white,),
             ],
           ),
@@ -47,9 +51,6 @@ class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
-
-
-
 
 
 class _HomePageState extends State<HomePage> {
@@ -86,14 +87,14 @@ class _HomePageState extends State<HomePage> {
         stateManagement: true, // Default is true.
         hideNavigationBarWhenKeyboardShows: true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
         decoration: NavBarDecoration(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(0.0),
           colorBehindNavBar: Colors.white,
         ),
         popAllScreensOnTapOfSelectedTab: true,
         popActionScreens: PopActionScreensType.all,
         itemAnimationProperties: ItemAnimationProperties( // Navigation Bar's items animation properties.
           duration: Duration(milliseconds: 200),
-          curve: Curves.ease,
+          curve: Curves.easeInOutQuad,
         ),
         screenTransitionAnimation: ScreenTransitionAnimation( // Screen transition animation on change of selected tab.
           animateTabTransition: true,
@@ -107,7 +108,7 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> _buildScreens() {
     return [
-      AdminLogin(),
+      ShopOwnerLogin(),
       POSLogin(),
     ];
   }
@@ -115,14 +116,16 @@ class _HomePageState extends State<HomePage> {
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.person_crop_circle_fill_badge_plus),
-        title: ("Admin Login"),
+        icon: Icon(Icons.shopping_basket),
+        title: ("Shop Login"),
+        textStyle: TextStyle(fontFamily: "MPLUSRounded"),
         activeColorPrimary: CupertinoColors.systemRed,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.person_crop_circle_fill),
         title: ("POS Login"),
+        textStyle: TextStyle(fontFamily: "MPLUSRounded"),
         activeColorPrimary: CupertinoColors.systemRed,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
@@ -130,50 +133,140 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class AdminLogin extends StatefulWidget {
-  const AdminLogin({Key? key}) : super(key: key);
+class ShopOwnerLogin extends StatefulWidget {
+  const ShopOwnerLogin({Key? key}) : super(key: key);
 
   @override
-  _AdminLoginState createState() => _AdminLoginState();
+  _ShopOwnerLoginState createState() => _ShopOwnerLoginState();
 }
 
-class _AdminLoginState extends State<AdminLogin> {
+class _ShopOwnerLoginState extends State<ShopOwnerLogin> {
+  final databaseRef = FirebaseDatabase.instance.reference();
+
+  TextEditingController _userNameTextEditingController = TextEditingController();
+  TextEditingController _passwordTextEditingController = TextEditingController();
+
+  bool showUsernameErrorMessgae = false;
+  bool showPasswordErrorMessage = false;
+
+  String userErrorMessage = "Shop doesn't Exists!";
+  String passwordErrorMessage = "Wrong Password";
+
   @override
   Widget build(BuildContext context) {
-    return Container(child:Center(
-      child: Center(child:Container(
-        height: MediaQuery.of(context).size.height/2,
-        color: Colors.black,
-        child: MaterialButton(
-          onPressed: () => {
-            pushNewScreen(
-              context,
-              withNavBar: false,
-              screen: GenerateBarCodeScreen(),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10.0,100,10.0,100),
+        child: Column(
+          children: [
+            Icon(Icons.shopping_basket,size: 60,),
+            Text('Shop Login', textAlign: TextAlign.center, style: TextStyle(
+                color: Color.fromRGBO(38, 50, 56, 1),
+                fontFamily: 'MPLUSRounded',
+                fontSize: 40,
+                letterSpacing: 0.20000001788139343,
+                fontWeight: FontWeight.bold,
+                height: 1.400000028610228
+            ),),
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.black,
+                  border: Border.all(width: 0),
+                  borderRadius: BorderRadius.all(Radius.circular(20))
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 20,),
+                    CustomTextField("Username",Icons.shopping_basket,_userNameTextEditingController,showUsernameErrorMessgae,userErrorMessage),
+                    SizedBox(height: 20,),
+                    CustomTextField("Password",Icons.remove_red_eye,_passwordTextEditingController,showPasswordErrorMessage,passwordErrorMessage),
+                    SizedBox(height: 10,),
+                    ElevatedButton(
+                      onPressed: () async {
+                        await databaseRef.child("Shops").orderByChild("Username").equalTo(_userNameTextEditingController.text).once().then((DataSnapshot snapshot){
+                          Map<dynamic, dynamic> values = snapshot.value;
+                          values.forEach((key,values) {
+                            if(values["Password"]==_passwordTextEditingController.text){
+                              print("Shop Login Successfully");
+                              pushNewScreen(
+                                context,
+                                withNavBar: false,
+                                screen: GenerateBarCodeScreen(),
+                              );
+                            }
+                            else{
+                              showPasswordErrorMessage = true;
+                              setState(() {});
+                            }
+                          });
+                        }).onError((error, stackTrace){
+                          showUsernameErrorMessgae = true;
+                          setState(() {});
+                        });
+                      },
+                      child: Text('Login'),
+                      style: ElevatedButton.styleFrom(
+                          shape: StadiumBorder(),
+                        primary: Colors.red,
+                        padding: EdgeInsets.symmetric(horizontal: 150, vertical: 25),
+                        textStyle: TextStyle(color: Colors.grey[100],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+                    ),),
+                    SizedBox(height: 20,),
+
+                  ],
+                ),
+              ),
             ),
-          },
-          color: Colors.black,
-          padding: EdgeInsets.all(10.0),
-          child: Column( // Replace with a Row for horizontal icon + text
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Icon(Icons.qr_code_scanner,color: Colors.red,size: 40,),
-              SizedBox(height: 10,),
-              Text('Barcode Demo', textAlign: TextAlign.center, style: TextStyle(
-                  color: Colors.red,
-                  fontFamily: 'Inter',
-                  fontSize: 20,
-                  letterSpacing: 0.20000001788139343,
-                  fontWeight: FontWeight.normal,
-                  height: 1.400000028610228
-              ),),
-            ],
-          ),
+            SizedBox(height: 10,),
+            TextButton(onPressed: (){}, child: Text('Forgot Password ?', textAlign: TextAlign.center, style: TextStyle(
+                color: Colors.black,
+                fontFamily: 'MPLUSRounded',
+                fontSize: 15,
+                letterSpacing: 0.20000001788139343,
+                fontWeight: FontWeight.w200,
+                height: 1.400000028610228
+            ),),)
+          ],
         ),
-        //child: RaisedButton.icon(color:Colors.black,onPressed: (){print("OLA");}, icon: Icon(Icons.inventory,color: Colors.red,), label: Text("Add From Inventory",style: TextStyle(color: Colors.red),)),
-      ),),
-    ));
+      ),
+    );
+  }
+
+  CustomTextField(String hintText,IconData icon,TextEditingController controller,bool showErrorMessage,String errorMessage) {
+    return TextField(
+      controller: controller,
+      style: TextStyle(color: Colors.grey[100],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+      decoration: InputDecoration(
+          errorStyle: TextStyle(
+            fontSize: 16.0,
+          ),
+        errorText: showErrorMessage?errorMessage:null,
+          border: OutlineInputBorder(
+            borderSide: BorderSide(),
+            borderRadius: BorderRadius.circular(100.0),
+          ),
+          enabledBorder:OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey),
+            borderRadius: BorderRadius.circular(100.0),
+          ) ,
+          filled: true,
+          focusColor: Colors.white,
+          focusedBorder:OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.white, width: 2.0),
+            borderRadius: BorderRadius.circular(100.0),
+          ),
+          prefixIcon:Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Icon(icon,size: 40,color: Colors.white,),
+          ),
+          hintStyle: TextStyle(color: Colors.grey[500],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+          hintText: hintText,
+          fillColor: Colors.black
+      ),
+    );
   }
 }
 
@@ -185,40 +278,132 @@ class POSLogin extends StatefulWidget {
 }
 
 class _POSLoginState extends State<POSLogin> {
+  final databaseRef = FirebaseDatabase.instance.reference();
+
+  TextEditingController _userNameTextEditingController = TextEditingController();
+  TextEditingController _passwordTextEditingController = TextEditingController();
+
+  bool showUsernameErrorMessgae = false;
+  bool showPasswordErrorMessage = false;
+
+  String userErrorMessage = "POS Outlet doesn't Exists!";
+  String passwordErrorMessage = "Wrong Password";
+
   @override
   Widget build(BuildContext context) {
-    return Center(child:Container(
-      color: Colors.black,
-      child: MaterialButton(
-        onPressed: () => {
-          pushNewScreen(
-            context,
-            withNavBar: false,
-            screen: POSHomePage(
-            ),
-          ),
-        },
-        color: Colors.black,
-        padding: EdgeInsets.all(10.0),
-        child: Column( // Replace with a Row for horizontal icon + text
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Icon(Icons.inventory,color: Colors.red,size: 40,),
-            SizedBox(height: 10,),
-            Text('Add From Inventory', textAlign: TextAlign.center, style: TextStyle(
-                color: Colors.red,
-                fontFamily: 'Inter',
-                fontSize: 20,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10.0,100,10.0,100),
+        child: Column(
+          children: [
+            Icon(Icons.perm_contact_cal,size: 60,),
+            Text('POS Login', textAlign: TextAlign.center, style: TextStyle(
+                color: Color.fromRGBO(38, 50, 56, 1),
+                fontFamily: 'MPLUSRounded',
+                fontSize: 40,
                 letterSpacing: 0.20000001788139343,
-                fontWeight: FontWeight.normal,
+                fontWeight: FontWeight.bold,
                 height: 1.400000028610228
             ),),
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.black,
+                  border: Border.all(width: 0),
+                  borderRadius: BorderRadius.all(Radius.circular(20))
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 20,),
+                    CustomTextField("Username",Icons.perm_contact_cal_sharp,_userNameTextEditingController,showUsernameErrorMessgae,userErrorMessage),
+                    SizedBox(height: 20,),
+                    CustomTextField("Password",Icons.remove_red_eye,_passwordTextEditingController,showPasswordErrorMessage,passwordErrorMessage),
+                    SizedBox(height: 10,),
+                    ElevatedButton(
+                      onPressed: () async {
+                        await databaseRef.child("Shops").orderByChild("Username").equalTo(_userNameTextEditingController.text).once().then((DataSnapshot snapshot){
+                          Map<dynamic, dynamic> values = snapshot.value;
+                          values.forEach((key,values) {
+                            if(values["Password"]==_passwordTextEditingController.text){
+                              print("OUTLET Login Successfully");
+                              pushNewScreen(
+                                context,
+                                withNavBar: false,
+                                screen: POSHomePage(),
+                              );
+                            }
+                            else{
+                              showPasswordErrorMessage = true;
+                              setState(() {});
+                            }
+                          });
+                        }).onError((error, stackTrace){
+                          showUsernameErrorMessgae = true;
+                          setState(() {});
+                        });
+                      },
+                      child: Text('Login'),
+                      style: ElevatedButton.styleFrom(
+                        shape: StadiumBorder(),
+                        primary: Colors.red,
+                        padding: EdgeInsets.symmetric(horizontal: 150, vertical: 25),
+                        textStyle: TextStyle(color: Colors.grey[100],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+                      ),),
+                    SizedBox(height: 20,),
+
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 10,),
+            TextButton(onPressed: (){}, child: Text('Forgot Password ?', textAlign: TextAlign.center, style: TextStyle(
+                color: Colors.black,
+                fontFamily: 'MPLUSRounded',
+                fontSize: 15,
+                letterSpacing: 0.20000001788139343,
+                fontWeight: FontWeight.w200,
+                height: 1.400000028610228
+            ),),)
           ],
         ),
       ),
-      //child: RaisedButton.icon(color:Colors.black,onPressed: (){print("OLA");}, icon: Icon(Icons.inventory,color: Colors.red,), label: Text("Add From Inventory",style: TextStyle(color: Colors.red),)),
-    ),);
+    );
+  }
+
+  CustomTextField(String hintText,IconData icon,TextEditingController controller,bool showErrorMessage,String errorMessage) {
+    return TextField(
+      controller: controller,
+      style: TextStyle(color: Colors.grey[100],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+      decoration: InputDecoration(
+          errorStyle: TextStyle(
+            fontSize: 16.0,
+          ),
+          errorText: showErrorMessage?errorMessage:null,
+          border: OutlineInputBorder(
+            borderSide: BorderSide(),
+            borderRadius: BorderRadius.circular(100.0),
+          ),
+          enabledBorder:OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey),
+            borderRadius: BorderRadius.circular(100.0),
+          ) ,
+          filled: true,
+          focusColor: Colors.white,
+          focusedBorder:OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.white, width: 2.0),
+            borderRadius: BorderRadius.circular(100.0),
+          ),
+          prefixIcon:Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Icon(icon,size: 40,color: Colors.white,),
+          ),
+          hintStyle: TextStyle(color: Colors.grey[500],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+          hintText: hintText,
+          fillColor: Colors.black
+      ),
+    );
   }
 }
 
