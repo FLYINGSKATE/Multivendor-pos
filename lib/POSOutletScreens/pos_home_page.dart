@@ -290,44 +290,6 @@ class _POSHomePageState extends State<POSHomePage> {
                   child: Container(
                     color: Colors.black,
                     child: MaterialButton(
-                      onPressed: () => {Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => InventoryPanel()),
-                      )},
-                      color: Colors.black,
-                      padding: EdgeInsets.all(10.0),
-                      child: Column( // Replace with a Row for horizontal icon + text
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(Icons.inventory,color: Colors.red,size: 40,),
-                          SizedBox(height: 10,),
-                          Text('Add From Inventory', textAlign: TextAlign.center, style: TextStyle(
-                              color: Colors.red,
-                              fontFamily: 'Inter',
-                              fontSize: 20,
-                              letterSpacing: 0.20000001788139343,
-                              fontWeight: FontWeight.normal,
-                              height: 1.400000028610228
-                          ),),
-                        ],
-                      ),
-                    ),
-                    //child: RaisedButton.icon(color:Colors.black,onPressed: (){print("OLA");}, icon: Icon(Icons.inventory,color: Colors.red,), label: Text("Add From Inventory",style: TextStyle(color: Colors.red),)),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Row(
-              children: [
-                Expanded(
-                  flex:1,
-                  child: Container(
-                    color: Colors.black,
-                    child: MaterialButton(
                       onPressed: (){
 
                       },
@@ -379,6 +341,72 @@ class _POSHomePageState extends State<POSHomePage> {
                     ),
                   ),
                 ),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Row(
+              children: [
+                Expanded(
+                  flex:1,
+                  child: Container(
+                    color: Colors.black,
+                    child: MaterialButton(
+                      onPressed: () => {},
+                      color: Colors.black,
+                      padding: EdgeInsets.all(10.0),
+                      child: Column( // Replace with a Row for horizontal icon + text
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(Icons.keyboard,color: Colors.red,size: 40,),
+                          SizedBox(height: 10,),
+                          Text('Number Pad', textAlign: TextAlign.center, style: TextStyle(
+                              color: Colors.red,
+                              fontFamily: 'Inter',
+                              fontSize: 20,
+                              letterSpacing: 0.20000001788139343,
+                              fontWeight: FontWeight.normal,
+                              height: 1.400000028610228
+                          ),),
+                        ],
+                      ),
+                    ),
+                    //child: RaisedButton.icon(color:Colors.black,onPressed: (){print("OLA");}, icon: Icon(Icons.inventory,color: Colors.red,), label: Text("Add From Inventory",style: TextStyle(color: Colors.red),)),
+                  ),
+                ),
+                Expanded(
+                  flex:1,
+                  child: Container(
+                    color: Colors.black,
+                    child: MaterialButton(
+                      onPressed: () => {Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => InventoryPanel()),
+                      )},
+                      color: Colors.black,
+                      padding: EdgeInsets.all(10.0),
+                      child: Column( // Replace with a Row for horizontal icon + text
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(Icons.inventory,color: Colors.red,size: 40,),
+                          SizedBox(height: 10,),
+                          Text('Add From Inventory', textAlign: TextAlign.center, style: TextStyle(
+                              color: Colors.red,
+                              fontFamily: 'Inter',
+                              fontSize: 20,
+                              letterSpacing: 0.20000001788139343,
+                              fontWeight: FontWeight.normal,
+                              height: 1.400000028610228
+                          ),),
+                        ],
+                      ),
+                    ),
+                    //child: RaisedButton.icon(color:Colors.black,onPressed: (){print("OLA");}, icon: Icon(Icons.inventory,color: Colors.red,), label: Text("Add From Inventory",style: TextStyle(color: Colors.red),)),
+                  ),
+                )
               ],
             ),
           ),
