@@ -27,6 +27,33 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+
+<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-messaging.js"></script>
+
+<script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+apiKey: "AIzaSyATpAAInbDuOeTpB4yi7ec7LojwKQQ_ejw",
+authDomain: "multivendor-pos-1267c.firebaseapp.com",
+databaseURL: "https://multivendor-pos-1267c-default-rtdb.firebaseio.com",
+projectId: "multivendor-pos-1267c",
+storageBucket: "multivendor-pos-1267c.appspot.com",
+messagingSenderId: "614410126179",
+appId: "1:614410126179:web:ac57474fe4e1c5a240c956",
+measurementId: "G-5F5HYLPG44"
+};
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+
+
+
+
+
+  <script src="main.dart.js" type="application/javascript"></script>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
@@ -94,5 +121,6 @@
       loadMainDartJs();
     }
   </script>
+
 </body>
 </html>

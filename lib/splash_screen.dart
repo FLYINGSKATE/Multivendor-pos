@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:rdipos/BarCodeScreen.dart';
 import 'package:rdipos/inventory.dart';
+import 'package:rdipos/widget_helper.dart';
 
 import 'POSOutletScreens/pos_home_page.dart';
 
@@ -25,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Duration(seconds: 1),
             () =>
             Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (BuildContext context) => InventoryPanel())));
+                builder: (BuildContext context) => HomePage())));
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -61,20 +62,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Image.asset('assets/images/rdilogo.png'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.qr_code_scanner,
-              color: Colors.green,
-            ),
-            onPressed: () {
-              // do something
-            },
-          )
-        ],
-      ),
+      appBar: WidgetHelper().RdiAppBar(),
       body: PersistentTabView(
         context,
         controller: _controller,

@@ -1,11 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:rdipos/POSOutletScreens/pos_home_page.dart';
 import 'package:rdipos/TestingBackend.dart';
 import 'package:rdipos/splash_screen.dart';
 
+import 'POSOutletScreens/pos_user_profile.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  FirebaseApp app = await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -28,7 +31,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primaryColor: Colors.black,
       ),
-      home: BackendTest(),
+      home: POSUserProfile(),
     );
   }
 }

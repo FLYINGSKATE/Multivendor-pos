@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rdipos/Product.dart';
+import 'package:rdipos/widget_helper.dart';
 
 class InventoryPanel extends StatefulWidget {
   const InventoryPanel({Key? key}) : super(key: key);
@@ -13,38 +14,19 @@ class InventoryPanel extends StatefulWidget {
 }
 
 class _InventoryPanelState extends State<InventoryPanel> {
-
-  late int County = 1;
-
-
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(
-        title: Image.asset('assets/images/rdilogo.png'),),
+      appBar: WidgetHelper().RdiAppBar(),
       body:Container(
         height: MediaQuery.of(context).size.height,
-        child: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('/Aflatoon General Store').snapshots(),
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-              if(!snapshot.hasData){
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              return ListView(
-                children: snapshot.data!.docs.map((document) {
-                  return Column(
-                    children: [
-                      SizedBox(height: 5,),
-                      ProductListCard(document["Name"],document["Stock"]),
-                    ],
-                  );
-                }).toList(),
-              );
-            }
-        ),
+        child: Column(
+          children: [
+            SizedBox(height: 5,),
+            ProductListCard("Pepsi cola","10"),
+          ],
+        )
       ) ,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {

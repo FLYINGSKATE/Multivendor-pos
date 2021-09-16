@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rdipos/Bouncing.dart';
 import 'package:rdipos/ProductModel.dart';
 import 'package:rdipos/inventory.dart';
+import 'package:rdipos/widget_helper.dart';
+import 'package:spring/spring.dart';
 
 
 class POSHomePage extends StatefulWidget {
@@ -14,6 +17,11 @@ class POSHomePage extends StatefulWidget {
 class _POSHomePageState extends State<POSHomePage> {
   List<int> text = [1,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4];
 
+  bool quantityMode = false;
+  bool DiscMode = false;
+  bool PriceMode = false;
+  bool plusMode = false;
+
   List<ProductModel> productOnList = [
     ProductModel("Pepsi", 10.0),
     ProductModel("Mazza", 10.0),
@@ -25,6 +33,17 @@ class _POSHomePageState extends State<POSHomePage> {
 
   double totalValue = 0.0;
 
+  bool showNumberPad = false;
+
+  final SpringController springController =
+  SpringController(initialAnim: Motion.play);
+
+  int tempQuantity = 0;
+
+  double tempPrice = 0;
+
+  double tempDiscount = 0;
+
   @override
   initState() {
     super.initState();
@@ -33,20 +52,7 @@ class _POSHomePageState extends State<POSHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Image.asset('assets/images/rdilogo.png'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.qr_code_scanner,
-              color: Colors.green,
-            ),
-            onPressed: () {
-              // do something
-            },
-          )
-        ],
-      ),
+      appBar:WidgetHelper().RdiAppBar(),
       body: OrientationBuilder(
         builder: (context, orientation) {
           if(orientation==Orientation.landscape){
@@ -147,7 +153,7 @@ class _POSHomePageState extends State<POSHomePage> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  for ( var i in text )Product(),
+                  Product(),
                 ],
               ),
             ),
@@ -213,7 +219,7 @@ class _POSHomePageState extends State<POSHomePage> {
         ),
         Expanded(
           flex: 2,
-          child: Text('x 10', textAlign: TextAlign.center, style: TextStyle(
+          child: Text('$tempQuantity', textAlign: TextAlign.center, style: TextStyle(
               color: Color.fromRGBO(38, 50, 56, 1),
               fontFamily: 'Inter',
               fontSize: 16,
@@ -224,7 +230,7 @@ class _POSHomePageState extends State<POSHomePage> {
         ),
         Expanded(
           flex: 2,
-          child: Text('10 ₹', textAlign: TextAlign.center, style: TextStyle(
+          child: Text('$tempPrice ₹', textAlign: TextAlign.center, style: TextStyle(
               color: Color.fromRGBO(38, 50, 56, 1),
               fontFamily: 'Inter',
               fontSize: 16,
@@ -252,7 +258,7 @@ class _POSHomePageState extends State<POSHomePage> {
         ),
         Expanded(
           flex: 2,
-          child: Text('x 100', textAlign: TextAlign.center, style: TextStyle(
+          child: Text('$tempQuantity', textAlign: TextAlign.center, style: TextStyle(
               color: Color.fromRGBO(38, 50, 56, 1),
               fontFamily: 'Inter',
               fontSize: 20,
@@ -263,7 +269,7 @@ class _POSHomePageState extends State<POSHomePage> {
         ),
         Expanded(
           flex: 2,
-          child: Text('100 ₹', textAlign: TextAlign.center, style: TextStyle(
+          child: Text('$tempPrice ₹', textAlign: TextAlign.center, style: TextStyle(
               color: Color.fromRGBO(38, 50, 56, 1),
               fontFamily: 'Inter',
               fontSize: 20,
@@ -277,7 +283,7 @@ class _POSHomePageState extends State<POSHomePage> {
   }
 
   Widget BottomPanel() {
-    return Container(
+    return !showNumberPad?NumberPad():Container(
       width: MediaQuery.of(context).size.width,
       child: Column(
         children: [
@@ -353,34 +359,6 @@ class _POSHomePageState extends State<POSHomePage> {
                   child: Container(
                     color: Colors.black,
                     child: MaterialButton(
-                      onPressed: () => {},
-                      color: Colors.black,
-                      padding: EdgeInsets.all(10.0),
-                      child: Column( // Replace with a Row for horizontal icon + text
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(Icons.keyboard,color: Colors.red,size: 40,),
-                          SizedBox(height: 10,),
-                          Text('Number Pad', textAlign: TextAlign.center, style: TextStyle(
-                              color: Colors.red,
-                              fontFamily: 'Inter',
-                              fontSize: 20,
-                              letterSpacing: 0.20000001788139343,
-                              fontWeight: FontWeight.normal,
-                              height: 1.400000028610228
-                          ),),
-                        ],
-                      ),
-                    ),
-                    //child: RaisedButton.icon(color:Colors.black,onPressed: (){print("OLA");}, icon: Icon(Icons.inventory,color: Colors.red,), label: Text("Add From Inventory",style: TextStyle(color: Colors.red),)),
-                  ),
-                ),
-                Expanded(
-                  flex:1,
-                  child: Container(
-                    color: Colors.black,
-                    child: MaterialButton(
                       onPressed: () => {Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => InventoryPanel()),
@@ -406,6 +384,38 @@ class _POSHomePageState extends State<POSHomePage> {
                     ),
                     //child: RaisedButton.icon(color:Colors.black,onPressed: (){print("OLA");}, icon: Icon(Icons.inventory,color: Colors.red,), label: Text("Add From Inventory",style: TextStyle(color: Colors.red),)),
                   ),
+                ),
+                Expanded(
+                  flex:1,
+                  child: Container(
+                    color: Colors.black,
+                    child: MaterialButton(
+                      onPressed: () {
+                        showNumberPad = !showNumberPad;
+                        setState(() {
+                        });
+                      },
+                      color: Colors.black,
+                      padding: EdgeInsets.all(10.0),
+                      child: Column( // Replace with a Row for horizontal icon + text
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(Icons.keyboard,color: Colors.red,size: 40,),
+                          SizedBox(height: 10,),
+                          Text('Number Pad', textAlign: TextAlign.center, style: TextStyle(
+                              color: Colors.red,
+                              fontFamily: 'Inter',
+                              fontSize: 20,
+                              letterSpacing: 0.20000001788139343,
+                              fontWeight: FontWeight.normal,
+                              height: 1.400000028610228
+                          ),),
+                        ],
+                      ),
+                    ),
+                    //child: RaisedButton.icon(color:Colors.black,onPressed: (){print("OLA");}, icon: Icon(Icons.inventory,color: Colors.red,), label: Text("Add From Inventory",style: TextStyle(color: Colors.red),)),
+                  ),
                 )
               ],
             ),
@@ -414,4 +424,245 @@ class _POSHomePageState extends State<POSHomePage> {
       ),
     );
   }
+
+  NumberPad() {
+    return Column(
+      children: [
+        Expanded(flex: 1,
+        child: Row(
+          children: [
+            Expanded(flex:1,child: SingleBTN("1"),),
+            Expanded(flex:1,child: SingleBTN("2"),),
+            Expanded(flex:1,child: SingleBTN("3"),),
+            Expanded(flex:1,child: SingleBTN("QTY"),),
+          ],
+        ),
+        ),
+        Expanded(flex: 1,child:Row(
+          children: [
+            Expanded(flex:1,child: SingleBTN("4"),),
+            Expanded(flex:1,child: SingleBTN("5"),),
+            Expanded(flex:1,child: SingleBTN("6"),),
+            Expanded(flex:1,child: SingleBTN("Disc"),),
+          ],
+        ) ,),
+        Expanded(flex: 1,child: Row(
+          children: [
+            Expanded(flex:1,child: SingleBTN("7"),),
+            Expanded(flex:1,child: SingleBTN("8"),),
+            Expanded(flex:1,child: SingleBTN("9"),),
+            Expanded(flex:1,child: SingleBTN("Price"),),
+          ],
+        ),),
+        Expanded(flex: 1,child: Row(
+          children: [
+            Expanded(flex:1,child: SingleBTN("+/-"),),
+            Expanded(flex:1,child: SingleBTN("0"),),
+            Expanded(flex:1,child: SingleBTN("."),),
+            Expanded(flex:1,child: SingleBTN("<"),),
+          ],
+        ),),
+      ],
+    );
+  }
+
+  SingleBTN(String s) {
+    switch(s){
+      case "QTY":
+        return Bouncing(
+          onPress: () {
+          quantityMode = !quantityMode;
+          DiscMode = false;
+          PriceMode = false;
+          plusMode = false;
+          setState(() {
+
+          });
+          },
+          child: GestureDetector(
+            onTap: () {
+
+
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  color: !quantityMode?Colors.black:Colors.red,
+                  border: Border.all(
+                    color: Colors.white,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(0))
+              ),
+              height: MediaQuery.of(context).size.height,
+              child: Center(child: Text(s, textAlign: TextAlign.left, style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Inter',
+                  fontSize: 28,
+                  letterSpacing: 0.20000001788139343,
+                  fontWeight: FontWeight.bold,
+                  height: 1.400000028610228
+              ),),),
+
+
+            )
+          ),
+        );
+      case "Disc":
+        return Bouncing(
+          onPress: () {
+            DiscMode = !DiscMode;
+            plusMode=false;
+            quantityMode = false;
+            PriceMode = false;
+            setState(() {
+            });
+          },
+          child: Container(
+            decoration: BoxDecoration(
+                color: !DiscMode?Colors.black:Colors.red,
+                border: Border.all(
+                  color: Colors.white,
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(0))
+            ),
+            height: MediaQuery.of(context).size.height,
+            child: Center(child: Text(s, textAlign: TextAlign.left, style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Inter',
+                fontSize: 28,
+                letterSpacing: 0.20000001788139343,
+                fontWeight: FontWeight.bold,
+                height: 1.400000028610228
+            ),),),
+
+
+          ),);
+      case "Price":
+        return Bouncing(
+          onPress: () {
+            PriceMode=!PriceMode;
+            plusMode=false;
+            quantityMode = false;
+            DiscMode = false;
+            setState(() {});
+          },
+          child: Container(
+            decoration: BoxDecoration(
+                color: !PriceMode?Colors.black:Colors.red,
+                border: Border.all(
+                  color: Colors.white,
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(0))
+            ),
+            height: MediaQuery.of(context).size.height,
+            child: Center(child: Text(s, textAlign: TextAlign.left, style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Inter',
+                fontSize: 28,
+                letterSpacing: 0.20000001788139343,
+                fontWeight: FontWeight.bold,
+                height: 1.400000028610228
+            ),),),
+
+
+          ),);
+      case "+/-":
+        return Bouncing(
+          onPress: () {
+            plusMode=!plusMode;
+            setState(() {
+
+            });
+          },
+          child: Container(
+            decoration: BoxDecoration(
+                color: !plusMode?Colors.black:Colors.red,
+                border: Border.all(
+                  color: Colors.white,
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(0))
+            ),
+            height: MediaQuery.of(context).size.height,
+            child: Center(child: Text(plusMode?"-":"+",textAlign: TextAlign.left, style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Inter',
+                fontSize: 28,
+                letterSpacing: 0.20000001788139343,
+                fontWeight: FontWeight.bold,
+                height: 1.400000028610228
+            ),),),
+
+
+          ),);
+      default:
+        return Bouncing(
+          onPress: () {
+            if(s=="<"){
+              showNumberPad=!showNumberPad;
+              setState(() {
+
+              });
+            }
+            else{
+              applyLogic(s);
+            }
+          },
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.black,
+                border: Border.all(
+                  color: Colors.white,
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(0))
+            ),
+            height: MediaQuery.of(context).size.height,
+            child: Center(child: Text(s, textAlign: TextAlign.left, style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Inter',
+                fontSize: 28,
+                letterSpacing: 0.20000001788139343,
+                fontWeight: FontWeight.bold,
+                height: 1.400000028610228
+            ),),),
+
+
+          ),);
+    }
+  }
+
+  applyLogic(String s){
+    if(!plusMode){
+      if(quantityMode){
+        tempQuantity +=int.parse(s);
+        print(tempQuantity);
+        setState(() {
+        });
+      }
+      else if(DiscMode){
+        tempDiscount+=int.parse(s);;
+        print(tempDiscount);
+        setState(() {
+        });
+      }
+      else if(PriceMode){
+        tempPrice +=int.parse(s);;
+        print(tempPrice);
+        setState(() {
+        });
+      }
+    }
+    else {
+      if (quantityMode) {
+        tempQuantity -= int.parse(s);
+        setState(() {});
+      }
+      else if (DiscMode) {
+        tempDiscount -= int.parse(s);
+        setState(() {});
+      }
+      else if (PriceMode) {
+        tempPrice -= int.parse(s);
+        setState(() {});
+      }
+    }
+    }
 }
