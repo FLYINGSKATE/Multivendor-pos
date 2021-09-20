@@ -1,9 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:rdipos/POSOutletScreens/pos_home_page.dart';
+import 'package:rdipos/SuperAdminScreens/super_admin_homepage_screen.dart';
+import 'package:rdipos/SuperAdminScreens/super_admin_login_screen.dart';
 import 'package:rdipos/TestingBackend.dart';
 import 'package:rdipos/splash_screen.dart';
-
 import 'POSOutletScreens/pos_user_profile.dart';
 
 Future<void> main() async {
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primaryColor: Colors.black,
       ),
-      home: POSUserProfile(),
+      home: SuperAdminHomePage(),
     );
   }
 }

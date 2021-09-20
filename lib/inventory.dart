@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:rdipos/ApiRepo/FirebaseRepo.dart';
 import 'package:rdipos/Product.dart';
 import 'package:rdipos/widget_helper.dart';
 
@@ -14,23 +15,25 @@ class InventoryPanel extends StatefulWidget {
 }
 
 class _InventoryPanelState extends State<InventoryPanel> {
+
+  Map tempinventoryProductList = {};
+  final db = FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: WidgetHelper().RdiAppBar(),
-      body:Container(
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: [
-            SizedBox(height: 5,),
-            ProductListCard("Pepsi cola","10"),
-          ],
-        )
-      ) ,
+      body:Container(),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          getDocs();
+
         },
         backgroundColor: Colors.red,
         icon: Icon(Icons.add),
@@ -62,17 +65,6 @@ class _InventoryPanelState extends State<InventoryPanel> {
     );
   }
 
-  Future getDocs() async {
-    ///I want all the products in Aflatoon General Stores
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("/Aflatoon General Store").get();
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      var a = querySnapshot.docs[i];
-      Product p = Product.fromJson(a.data() as Map<String,dynamic>);
-      print(a.data());
-      print(p.Name);
-      print(a.data().runtimeType);
-    }
-  }
 
   ProductListCard(String name,String quantity) {
     bool _visibleFullCard = false;

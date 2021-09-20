@@ -244,8 +244,6 @@ class _BackendTestState extends State<BackendTest> {
             ),
             SizedBox(height: 10,),
             Text("aks;ka"),
-            //
-            body(FirebaseFirestore.instance.collection("/Aflatoon General Store").doc("Products").snapshots()),
           ],
         ),
 
@@ -253,33 +251,4 @@ class _BackendTestState extends State<BackendTest> {
     );
   }
 
-  Widget body(var stream) {
-    return StreamBuilder(
-        stream: stream.snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-            case ConnectionState.waiting:
-              return Text("Please Wait");
-            default:
-              if (snapshot.hasData) {
-                print(snapshot.data!.docs.length);
-                if (snapshot.data!.docs.length == 0) {
-                  return Text("No record Found");
-                }
-                else {
-                  return ListView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        print(snapshot.data.toString());
-                        //String name = snapshot.data!.docs[index].toString();
-                        return Text('');
-                      });
-                }
-              }
-              else return Text("Getting Error");
-          }
-        }
-    );
-  }
 }
