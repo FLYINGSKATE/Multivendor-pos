@@ -108,11 +108,56 @@ class FirebaseRepo {
   SuspendShop(){}
 
   Future<List<DocumentSnapshot>> FetchListOfAllShops() async {
-    final QuerySnapshot result = await await FirebaseFirestore.instance.collection('/ShopList').get();
+    final QuerySnapshot result = await FirebaseFirestore.instance.collection('/ShopList').get();
     final List<DocumentSnapshot> documents = result.docs;
     documents.forEach((data) => print(data.id));
     return documents;
   }
+
+  Future<String> AddNewShop(String shopName,String shopLoginName,String shopPassword,String shopContactNumber,String shopAddress) async {
+    bool shopAlreadyExists = await ShopAlreadyExsists(shopName);
+    if(shopAlreadyExists){
+      return "Shop Already Exists";
+    }
+    if(!shopAlreadyExists){
+      final QuerySnapshot result = await await FirebaseFirestore.instance.collection('/ShopList').get();
+      FirebaseFirestore.instance.collection('/ShopList').doc('$shopName').set(
+          {
+            "ShopUserName" : shopName,
+            "ShopLoginName" : shopLoginName,
+            "ShopPassword" : shopPassword,
+            "ShopContactNumber" : shopContactNumber,
+            "ShopAddress" : shopAddress,
+          }).then((value){
+        print("Hola");
+        return "Shop Added Successfully";
+      });
+      return "Something Went Wrong!";
+    }
+    return "Shop Already Exists";
+  }
+
+  Future<bool> ShopAlreadyExsists(String shopName) async{
+    Map shopDetails = {};
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("/ShopList").get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      var a = querySnapshot.docs[i];
+      print(a.data());
+      print(a.data().runtimeType);
+      shopDetails = Map<String, dynamic>.from(a.data() as Map<String,dynamic>);
+      if(shopDetails["ShopName"] == shopName){
+        print("Login Successful");
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+    return true;
+  }
+
+
+
 
 
   ////await Firestore.instance.collection('Stores').document(widget.currentUserUID).collection("Stores").getDocuments();
