@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rdipos/POSOutletScreens/pos_home_page.dart';
-import 'package:rdipos/widget_helper.dart';
+import 'package:rdipos/Utility/widget_helper.dart';
 
 import '../Bouncing.dart';
 class POSUserProfile extends StatefulWidget {

@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rdipos/ApiRepo/FirebaseRepo.dart';
 import 'package:rdipos/Product.dart';
-import 'package:rdipos/widget_helper.dart';
+import 'package:rdipos/Utility/widget_helper.dart';
 
 class InventoryPanel extends StatefulWidget {
   const InventoryPanel({Key? key}) : super(key: key);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rdipos/BarCodeScreen.dart';
 
 class WidgetHelper{
+
   RdiAppBar(){
     return AppBar(
       title: Image.asset('assets/images/rdilogo.png'),
@@ -16,6 +17,16 @@ class WidgetHelper{
           },
         )
       ],
+    );
+  }
+
+  CustomSnackBar(String Message){
+    return SnackBar(
+      backgroundColor: Colors.black,
+      content: Text(
+        Message,
+        style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+      ),
     );
   }
 
@@ -52,4 +63,5 @@ class WidgetHelper{
       ),
     );
   }
+
 }

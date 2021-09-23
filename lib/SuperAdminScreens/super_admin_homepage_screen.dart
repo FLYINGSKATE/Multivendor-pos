@@ -7,7 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:rdipos/ApiRepo/FirebaseRepo.dart';
-import 'package:rdipos/widget_helper.dart';
+import 'package:rdipos/ShopDetailsScreen.dart';
+import 'package:rdipos/Utility/widget_helper.dart';
 
 class SuperAdminHomePage extends StatefulWidget {
   const SuperAdminHomePage({Key? key}) : super(key: key);
@@ -161,8 +162,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             return Column(
               children: <Widget>[
                 // Widget to display the list of project
-                ShopCard(documents.elementAt(index).id),
-
+                ShopCard(documents.elementAt(index).id,Icon(Icons.block)),
               ],
             );
           },
@@ -172,8 +172,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
     );
   }
 
-  Widget ShopCard(String shopName) {
-    return Container(
+
+  Widget ShopCard(String shopName,Icon iconsData) {
+    return GestureDetector(child:Container(
         child:Card(
         color: Colors.red,
         shape: RoundedRectangleBorder(
@@ -194,8 +195,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 flex: 1,
                 child:IconButton(
                   iconSize: 36,
-                  icon: Icon(Icons.block),
-                  onPressed: (){},
+                  icon: iconsData,
+                  onPressed: (){
+                    FirebaseRepo().BlockShop(shopName);
+                    setState(() {
+
+                    });
+                  },
                 ) ,
               ),
               Expanded(
@@ -213,7 +219,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
           )
         ),
       ),
-    );
+    ),onTap: (){pushNewScreen(
+      context,
+      withNavBar: false,
+      screen: ShopDetails(shopName: shopName),
+    );},);
   }
 
 }
@@ -378,16 +388,123 @@ class BlockShopList extends StatefulWidget {
 class _BlockShopListState extends State<BlockShopList> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    try {
+      return Container(
+          color: Colors.black,
+          child:Column(
+            children: [
+              SizedBox(height: 20,),
+              Card(
+                color: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20), // if you need this
+                  side: BorderSide(
+                    color: Colors.grey.withOpacity(0.2),
+                    width: 4,
+                  ),
+                ),
+                child: BlurryContainer(
+                  bgColor: Colors.black12,
+                  width: MediaQuery.of(context).size.width/0.9,
+                  height: 200,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Blocked Shops",style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 20,color: Colors.white)),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.home,color: Colors.white,size: 60,),
+                          Text("totalNoO",textAlign:TextAlign.center,style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 40,color: Colors.white,fontWeight: FontWeight.bold)),
+                        ],)
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 20,),
+              Expanded(child: AllBlockedShopList(),),
+
+            ],
+          ));
+    }
+    catch(e) {
+      return Container(height:200,color:Colors.red);
+    }
+  }
+
+  AllBlockedShopList() {
+    int totalNoOfShops=0;
+    String shopName = "";
+    return FutureBuilder(
+      builder: (context, projectSnap) {
+        if (projectSnap.connectionState == ConnectionState.none &&
+            projectSnap.hasData == null) {
+          //print('project snapshot data is: ${projectSnap.data}');
+          return CircularProgressIndicator();
+        }
+        final List<DocumentSnapshot> documents = projectSnap.data as List<DocumentSnapshot>;
+
+        return ListView.builder(
+          itemCount: documents.length,
+          itemBuilder: (context, index) {
+            return Column(
+              children: <Widget>[
+                // Widget to display the list of project
+                ShopCard(documents.elementAt(index).id,Icon(Icons.play_arrow)),
+              ],
+            );
+          },
+        );
+      },
+      future: FirebaseRepo().FetchListOfBlockedShops(),
+    );
+  }
+
+  Widget ShopCard(String shopName,Icon iconsData) {
+    return Container(
+      child:Card(
+        color: Colors.red,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(100), // if you need this
+          side: BorderSide(
+            color: Colors.grey.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
+        child: Container(
+            width: MediaQuery.of(context).size.width/0.9,
+            height: 75,
+            child: Row(
+              children: [
+                SizedBox(width: 40,),
+                Expanded(flex: 3,child:Text("$shopName",style:TextStyle(fontWeight: FontWeight.bold,fontFamily: "MPLUSRounded",fontSize: 20,color: Colors.black))),
+                Expanded(
+                  flex: 1,
+                  child:IconButton(
+                    iconSize: 36,
+                    icon: iconsData,
+                    onPressed: (){
+                      FirebaseRepo().UnBlockShop(shopName);
+                      setState(() {
+                      });
+                    },
+                  ) ,
+                ),
+                Expanded(
+                  flex: 1,
+                  child:IconButton(
+                    iconSize: 36,
+                    icon: Icon(Icons.list_alt_outlined),
+                    onPressed: (){},
+                  ) ,
+                ),
+                SizedBox(width: 10,)
+              ],
+            )
+        ),
+      ),
+    );
   }
 }
-
-
-
-
-
-
-
-
-
-

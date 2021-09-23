@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rdipos/widget_helper.dart';
+import 'package:rdipos/Utility/widget_helper.dart';
 
 class ShopPanel extends StatefulWidget {
   const ShopPanel({Key? key}) : super(key: key);

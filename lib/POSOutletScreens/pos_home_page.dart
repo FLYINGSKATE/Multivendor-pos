@@ -8,7 +8,7 @@ import 'package:rdipos/Bouncing.dart';
 import 'package:rdipos/POSOutletScreens/pos_user_profile.dart';
 import 'package:rdipos/ProductModel.dart';
 import 'package:rdipos/inventory.dart';
-import 'package:rdipos/widget_helper.dart';
+import 'package:rdipos/Utility/widget_helper.dart';
 import 'package:spring/spring.dart';
 
 

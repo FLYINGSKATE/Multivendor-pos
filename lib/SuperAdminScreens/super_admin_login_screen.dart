@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:rdipos/SuperAdminScreens/super_admin_homepage_screen.dart';
-import 'package:rdipos/widget_helper.dart';
+import 'package:rdipos/Utility/widget_helper.dart';
 
 class SuperAdminLoginPage extends StatefulWidget {
   const SuperAdminLoginPage({Key? key}) : super(key: key);
@@ -84,7 +84,6 @@ class _SuperAdminLoginPageState extends State<SuperAdminLoginPage> {
                         textStyle: TextStyle(color: Colors.grey[100],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
                       ),),
                     SizedBox(height: 20,),
-
                   ],
                 ),
               ),
