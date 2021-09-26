@@ -55,13 +55,13 @@ class _SuperAdminLoginPageState extends State<SuperAdminLoginPage> {
                     WidgetHelper().CustomTextField("Username",Icons.perm_contact_cal_sharp,_userNameTextEditingController,showUsernameErrorMessgae,userErrorMessage),
                     SizedBox(height: 20,),
                     WidgetHelper().CustomTextField("Password",Icons.remove_red_eye,_passwordTextEditingController,showPasswordErrorMessage,passwordErrorMessage),
-                    SizedBox(height: 10,),
+                    SizedBox(height: 20,),
                     ElevatedButton(
-                      onPressed: () async {
-                        await databaseRef.child("Shops").orderByChild("Username").equalTo(_userNameTextEditingController.text).once().then((DataSnapshot snapshot){
-                          Map<dynamic, dynamic> values = snapshot.value;
-                          values.forEach((key,values) {
-                            if(values["Password"]==_passwordTextEditingController.text){
+                      onPressed: () {
+                        //await databaseRef.child("Shops").orderByChild("Username").equalTo(_userNameTextEditingController.text).once().then((DataSnapshot snapshot){
+                          //Map<dynamic, dynamic> values = snapshot.value;
+                          //values.forEach((key,values) {
+                            if("admin"==_passwordTextEditingController.text){
                               print("Admin Logged In Successfully");
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (BuildContext context) => SuperAdminHomePage()));
@@ -70,12 +70,7 @@ class _SuperAdminLoginPageState extends State<SuperAdminLoginPage> {
                               showPasswordErrorMessage = true;
                               setState(() {});
                             }
-                          });
-                        }).onError((error, stackTrace){
-                          showUsernameErrorMessgae = true;
-                          setState(() {});
-                        });
-                      },
+                          },
                       child: Text('Login'),
                       style: ElevatedButton.styleFrom(
                         shape: StadiumBorder(),

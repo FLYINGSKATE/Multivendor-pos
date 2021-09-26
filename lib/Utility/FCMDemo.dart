@@ -14,10 +14,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:rdipos/Utility/permissions.dart';
 
 import 'message.dart';
 import 'message_list.dart';
-import 'permissions.dart';
 import 'token_monitor.dart';
 
 /// Define a top-level named handler which background/terminated messages will

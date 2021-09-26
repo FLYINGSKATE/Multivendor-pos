@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rdipos/owner_pos_homepage.dart';
+import 'package:rdipos/DemoScreen.dart';
+import 'package:rdipos/SuperAdminScreens/super_admin_login_screen.dart';
+import 'package:rdipos/POSOutletScreens/owner_pos_homepage.dart';
 
 import 'POSOutletScreens/pos_home_page.dart';
 
@@ -20,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Duration(seconds: 1),
             () =>
             Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (BuildContext context) => HomePage())));
+                builder: (BuildContext context) => DemoScreen())));
 
     return Scaffold(
       backgroundColor: Colors.black,

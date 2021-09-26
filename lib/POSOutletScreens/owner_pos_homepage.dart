@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
 
-import 'BarCodeScreen.dart';
-import 'POSOutletScreens/pos_home_page.dart';
+import '../Utility/BarCodeScreen.dart';
+import 'pos_home_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -133,11 +133,11 @@ class _ShopOwnerLoginState extends State<ShopOwnerLogin> {
                     CustomTextField("Password",Icons.remove_red_eye,_passwordTextEditingController,showPasswordErrorMessage,passwordErrorMessage),
                     SizedBox(height: 10,),
                     ElevatedButton(
-                      onPressed: () async {
-                        await databaseRef.child("Shops").orderByChild("Username").equalTo(_userNameTextEditingController.text).once().then((DataSnapshot snapshot){
-                          Map<dynamic, dynamic> values = snapshot.value;
-                          values.forEach((key,values) {
-                            if(values["Password"]==_passwordTextEditingController.text){
+                      onPressed: ()  {
+                        //await databaseRef.child("Shops").orderByChild("Username").equalTo(_userNameTextEditingController.text).once().then((DataSnapshot snapshot){
+                          //Map<dynamic, dynamic> values = snapshot.value;
+                          //values.forEach((key,values) {
+                            if("admin"==_passwordTextEditingController.text){
                               print("Shop Login Successfully");
                               pushNewScreen(
                                 context,
@@ -149,12 +149,7 @@ class _ShopOwnerLoginState extends State<ShopOwnerLogin> {
                               showPasswordErrorMessage = true;
                               setState(() {});
                             }
-                          });
-                        }).onError((error, stackTrace){
-                          showUsernameErrorMessgae = true;
-                          setState(() {});
-                        });
-                      },
+                          },
                       child: Text('Login'),
                       style: ElevatedButton.styleFrom(
                         shape: StadiumBorder(),
@@ -270,11 +265,11 @@ class _POSLoginState extends State<POSLogin> {
                     WidgetHelper().CustomTextField("Password",Icons.remove_red_eye,_passwordTextEditingController,showPasswordErrorMessage,passwordErrorMessage),
                     SizedBox(height: 10,),
                     ElevatedButton(
-                      onPressed: () async {
-                        await databaseRef.child("Shops").orderByChild("Username").equalTo(_userNameTextEditingController.text).once().then((DataSnapshot snapshot){
-                          Map<dynamic, dynamic> values = snapshot.value;
-                          values.forEach((key,values) {
-                            if(values["Password"]==_passwordTextEditingController.text){
+                      onPressed: ()  {
+                        //await databaseRef.child("Shops").orderByChild("Username").equalTo(_userNameTextEditingController.text).once().then((DataSnapshot snapshot){
+                          //Map<dynamic, dynamic> values = snapshot.value;
+                          //values.forEach((key,values) {
+                            if("admin"==_passwordTextEditingController.text){
                               print("OUTLET Login Successfully");
                               pushNewScreen(
                                 context,
@@ -286,12 +281,7 @@ class _POSLoginState extends State<POSLogin> {
                               showPasswordErrorMessage = true;
                               setState(() {});
                             }
-                          });
-                        }).onError((error, stackTrace){
-                          showUsernameErrorMessgae = true;
-                          setState(() {});
-                        });
-                      },
+                          },
                       child: Text('Login'),
                       style: ElevatedButton.styleFrom(
                         shape: StadiumBorder(),

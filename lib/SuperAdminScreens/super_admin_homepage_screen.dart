@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:rdipos/ApiRepo/FirebaseRepo.dart';
-import 'package:rdipos/ShopDetailsScreen.dart';
+import 'package:rdipos/SuperAdminScreens/ShopDetailsScreen.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
 
 class SuperAdminHomePage extends StatefulWidget {
@@ -101,9 +101,23 @@ class AdminDashboard extends StatefulWidget {
 
 class _AdminDashboardState extends State<AdminDashboard> {
   int totalNoOfShops = 0;
+  int totalNoOfBlockedShops = 0;
+  int totalNoOfRunningShops = 0;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initializeCounter();
+    setState(() {
+
+    });
+  }
+  @override
   Widget build(BuildContext context) {
+
+
+
     return Container(
         color: Colors.black,
         child:Column(
@@ -122,22 +136,58 @@ class _AdminDashboardState extends State<AdminDashboard> {
               bgColor: Colors.black12,
               width: MediaQuery.of(context).size.width/0.9,
               height: 200,
-              child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("All Shops",style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 20,color: Colors.white)),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.home,color: Colors.white,size: 60,),
-                          Text(totalNoOfShops.toString(),textAlign:TextAlign.center,style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 40,color: Colors.white,fontWeight: FontWeight.bold)),
-                        ],)
-                    ],
-              ),
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child:Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("All Shops",style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 20,color: Colors.white)),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.home,color: Colors.white,size: 60,),
+                            Text(totalNoOfShops.toString(),textAlign:TextAlign.center,style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 40,color: Colors.white,fontWeight: FontWeight.bold)),
+                          ],),
+                      ],
+                    ),
+                    SizedBox(width: 30,),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Running Shops",style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 14,color: Colors.white)),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.play_arrow,color: Colors.white,size: 40,),
+                            Text(totalNoOfRunningShops.toString(),textAlign:TextAlign.center,style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 30,color: Colors.white,fontWeight: FontWeight.bold)),
+                          ],),
+                      ],
+                    ),
+                    SizedBox(width: 20,),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Blocked Shops",style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 14,color: Colors.white)),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.block,color: Colors.white,size: 40,),
+                            Text(totalNoOfBlockedShops.toString(),textAlign:TextAlign.center,style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 30,color: Colors.white,fontWeight: FontWeight.bold)),
+                          ],),
+                      ],
+                    ),
+                  ],
+                )
             ),
-          ),
+          ),),
           SizedBox(height: 20,),
           Expanded(child: AllShopList(),),
 
@@ -168,7 +218,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           },
         );
       },
-      future: FirebaseRepo().FetchListOfAllShops(),
+      future: FirebaseRepo().FetchListOfAllUnblockedShops(),
     );
   }
 
@@ -199,7 +249,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   onPressed: (){
                     FirebaseRepo().BlockShop(shopName);
                     setState(() {
-
                     });
                   },
                 ) ,
@@ -208,7 +257,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 flex: 1,
                 child:IconButton(
                   iconSize: 36,
-                  icon: Icon(Icons.list_alt_outlined),
+                  icon: Icon(Icons.phone),
                   onPressed: (){
 
                   },
@@ -226,6 +275,17 @@ class _AdminDashboardState extends State<AdminDashboard> {
     );},);
   }
 
+  Future<void> initializeCounter() async {
+    totalNoOfBlockedShops = await FirebaseRepo().FetchNumberOfBlockedShops();
+    totalNoOfRunningShops = await FirebaseRepo().FetchNumberOfRunningShops();
+    totalNoOfShops = totalNoOfBlockedShops + totalNoOfRunningShops;
+    print("Total No Of Shops"+totalNoOfBlockedShops.toString());
+    print("Total No Of Shops"+totalNoOfRunningShops.toString());
+    print("Total No Of Shops"+totalNoOfShops.toString());
+    setState(() {
+
+    });
+  }
 }
 
 class AddShop extends StatefulWidget {
@@ -339,14 +399,39 @@ class _AddShopState extends State<AddShop> {
                         setState(() {
 
                         });
-                        if(_shopNameTextEditingController.text.isEmpty&&_shopLoginEditingController.text.isEmpty
-                        &&_shopPasswordTextEditingController.text.isEmpty && _shopAddressTextEditingController.text.isEmpty && _shopShopContactNumberEditingController.text.isEmpty
+                        if(((_shopNameTextEditingController.text.isNotEmpty&&_shopLoginEditingController.text.isNotEmpty)
+                        &&(_shopPasswordTextEditingController.text.isNotEmpty && _shopAddressTextEditingController.text.isNotEmpty ))&& (_shopShopContactNumberEditingController.text.isNotEmpty)
                         ){
-
-                        }
-                        else{
                           String ADDSHOPMESSAGE  = await FirebaseRepo().AddNewShop(_shopNameTextEditingController.text.trim(),_shopLoginEditingController.text.trim(),_shopPasswordTextEditingController.text.trim(),_shopShopContactNumberEditingController.text.trim(),_shopAddressTextEditingController.text.trim());
                           print(ADDSHOPMESSAGE);
+                          Color messageColor = Colors.red;
+                          if(ADDSHOPMESSAGE=="Congratulations! Shop Added Successfully!"){
+                            messageColor = Colors.green;
+                          }
+                          _shopNameTextEditingController.text = "";
+                          _shopLoginEditingController.text = "";
+                          _shopPasswordTextEditingController.text = "";
+                          _shopAddressTextEditingController.text = "";
+                          _shopShopContactNumberEditingController.text  = "";
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            backgroundColor: Colors.black,
+                            content: Text(
+                              "$ADDSHOPMESSAGE",
+                              style: TextStyle(color:messageColor, letterSpacing: 0.5),
+                            ),
+                          ));
+                        }
+                        else{
+
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            backgroundColor: Colors.black,
+                            content: Text(
+                              "Please Fill in all the details Properly",
+                              style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+                            ),
+                          ));
+                          return;
+
                         }
 
                       },
@@ -417,7 +502,7 @@ class _BlockShopListState extends State<BlockShopList> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.home,color: Colors.white,size: 60,),
-                          Text("totalNoO",textAlign:TextAlign.center,style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 40,color: Colors.white,fontWeight: FontWeight.bold)),
+                          Text("1",textAlign:TextAlign.center,style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 40,color: Colors.white,fontWeight: FontWeight.bold)),
                         ],)
                     ],
                   ),
@@ -425,7 +510,6 @@ class _BlockShopListState extends State<BlockShopList> {
               ),
               SizedBox(height: 20,),
               Expanded(child: AllBlockedShopList(),),
-
             ],
           ));
     }
@@ -435,7 +519,6 @@ class _BlockShopListState extends State<BlockShopList> {
   }
 
   AllBlockedShopList() {
-    int totalNoOfShops=0;
     String shopName = "";
     return FutureBuilder(
       builder: (context, projectSnap) {
@@ -496,7 +579,7 @@ class _BlockShopListState extends State<BlockShopList> {
                   flex: 1,
                   child:IconButton(
                     iconSize: 36,
-                    icon: Icon(Icons.list_alt_outlined),
+                    icon: Icon(Icons.phone),
                     onPressed: (){},
                   ) ,
                 ),

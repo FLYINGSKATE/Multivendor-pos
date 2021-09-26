@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rdipos/POSOutletScreens/pos_home_page.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
 
-import '../Bouncing.dart';
+import '../Utility/Bouncing.dart';
 class POSUserProfile extends StatefulWidget {
   const POSUserProfile({Key? key}) : super(key: key);
 
@@ -16,7 +16,7 @@ class _POSUserProfileState extends State<POSUserProfile> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: WidgetHelper().RdiAppBar(),
-      body:Column(
+      body:SingleChildScrollView(child:Column(
         children: [
           ClipPath(
             clipper: CurveClipper(),
@@ -103,11 +103,9 @@ class _POSUserProfileState extends State<POSUserProfile> {
             ),
           )
         ],
-      )
+      ))
     );
   }
-
-
 }
 
 class CurveClipper extends CustomClipper<Path> {

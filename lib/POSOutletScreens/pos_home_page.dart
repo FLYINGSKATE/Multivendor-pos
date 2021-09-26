@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
-import 'package:rdipos/Bouncing.dart';
+import 'package:rdipos/Utility/Bouncing.dart';
 import 'package:rdipos/POSOutletScreens/pos_user_profile.dart';
 import 'package:rdipos/ProductModel.dart';
 import 'package:rdipos/inventory.dart';
