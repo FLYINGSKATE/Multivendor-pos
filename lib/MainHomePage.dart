@@ -4,14 +4,14 @@ import 'package:rdipos/SuperAdminScreens/super_admin_login_screen.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
 import 'package:rdipos/POSOutletScreens/owner_pos_homepage.dart';
 
-class DemoScreen extends StatefulWidget {
-  const DemoScreen({Key? key}) : super(key: key);
+class MainHomePage extends StatefulWidget {
+  const MainHomePage({Key? key}) : super(key: key);
 
   @override
-  _DemoScreenState createState() => _DemoScreenState();
+  _MainHomePageState createState() => _MainHomePageState();
 }
 
-class _DemoScreenState extends State<DemoScreen> {
+class _MainHomePageState extends State<MainHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -198,7 +198,7 @@ class LandingPage extends StatelessWidget {
                 child: TextButton(
                     onPressed: (){
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => POSHomePage()));
+                          builder: (BuildContext context) => HomePage()));
                     },
                     child :Text(
                   "Shop/POS Login",

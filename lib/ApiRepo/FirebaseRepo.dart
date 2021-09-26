@@ -2,12 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class FirebaseRepo {
+
+
   final String SHOP_NAME = 'Aflatoon General Store';
 
-
-
   ///Shop Keeper Methods & POS User API CALLS
-  AddPOSOutlet(){}
+  AddPOSOutlet(){
+
+  }
 
   RemovePOSOutlet(){}
 
@@ -23,7 +25,7 @@ class FirebaseRepo {
     Map productNameList = {};
     print("Fetching Inventory");
     try{
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("/Tookie Pan Bidi Shop").get();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("/ShopList").doc("Apunki Dukaan").collection("ProductList").get();
       //Doc id 2 is for Products
       var a = querySnapshot.docs[2];
       productNameList = Map<String, dynamic>.from(a.data() as Map<String,dynamic>);
@@ -184,7 +186,7 @@ class FirebaseRepo {
 
   Future<bool> ShopAlreadyExsists(String shopName) async{
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("/ShopList").where("ShopName", isEqualTo: "$shopName").get();
-    if(querySnapshot.docs.isEmpty){
+    if(querySnapshot.docs.isNotEmpty){
       return true;
     }
     return false;
@@ -205,22 +207,18 @@ class FirebaseRepo {
     if(productAlreadyExists){
       return "Oh! No Product Already Exists";
     }
-    if(!productAlreadyExists){
+    else{
       //final QuerySnapshot result = await await FirebaseFirestore.instance.collection('/ShopList').get();
-      FirebaseFirestore.instance.collection("/ShopList").doc("Apunki Dukaan").collection("ProductList").doc("$productName").set(
+      await FirebaseFirestore.instance.collection("/ShopList").doc("Apunki Dukaan").collection("ProductList").doc("$productName").set(
           {
             "ProductName" : productName,
             "ProductStock" : productStock,
             "Product Price":productPrice,
             "SellerContact" : sellerContact,
             "ProductBarCode" : productBarCode,
-          }).then((value){
-        print("Congratulations! Product Added Successfully!");
-        return "Congratulations! Product Added Successfully!";
-      });
-      return "Oops ! Something Went Wrong!";
+          }).whenComplete((){ return "Congratulations! Product Added Successfully!";}).onError((error, stackTrace){ return "Oops ! Something Went Wrong!";});
     }
-    return "Please Check Your Internet Connection!";
+    return "Congratulations! Product Added Successfully!";
   }
   ////await Firestore.instance.collection('Stores').document(widget.currentUserUID).collection("Stores").getDocuments();
 }

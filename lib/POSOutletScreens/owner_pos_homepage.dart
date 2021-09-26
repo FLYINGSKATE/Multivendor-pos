@@ -2,6 +2,7 @@ import'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:rdipos/ShopOwnerScreens/ShopOwnerHomePage.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
 
 import '../Utility/BarCodeScreen.dart';
@@ -142,7 +143,7 @@ class _ShopOwnerLoginState extends State<ShopOwnerLogin> {
                               pushNewScreen(
                                 context,
                                 withNavBar: false,
-                                screen: GenerateBarCodeScreen(),
+                                screen: ShopOwnerHomePage(),
                               );
                             }
                             else{
@@ -309,5 +310,4 @@ class _POSLoginState extends State<POSLogin> {
       ),
     );
   }
-
 }

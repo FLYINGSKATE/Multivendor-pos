@@ -204,6 +204,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
           //print('project snapshot data is: ${projectSnap.data}');
           return CircularProgressIndicator();
         }
+        if(projectSnap==null){
+          return Container();
+        }
         final List<DocumentSnapshot> documents = projectSnap.data as List<DocumentSnapshot>;
         totalNoOfShops = documents.length;
         return ListView.builder(
