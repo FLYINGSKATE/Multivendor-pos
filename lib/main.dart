@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primaryColor: Colors.black,
       ),
-      home: ShopOwnerHomePage(),
+      home: POSHomePage(),
     );
   }
 }

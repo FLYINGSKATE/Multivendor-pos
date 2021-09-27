@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:rdipos/ApiRepo/payments.dart';
 import 'package:rdipos/Utility/Bouncing.dart';
 import 'package:rdipos/POSOutletScreens/pos_user_profile.dart';
 import 'package:rdipos/ProductModel.dart';
@@ -405,7 +407,12 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                         ),
                         child: FlatButton(
                           onPressed: () => {
-                            openCheckout()
+                            if(kIsWeb){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Webpayment(price: 200000)),)
+                            }
+                            else{
+                              openCheckout()
+                            }
                           },
                           color: Colors.transparent,
                           padding: EdgeInsets.all(10.0),

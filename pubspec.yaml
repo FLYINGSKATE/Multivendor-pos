@@ -47,6 +47,7 @@ dependencies:
   blurrycontainer: ^0.0.1
   firebase_core_web:
   path_provider: ^2.0.4
+  syncfusion_flutter_sliders: ^19.2.62
 
 
 dev_dependencies:
@@ -67,7 +68,7 @@ flutter:
 
   assets:
      - assets/images/
-
+     - assets/payments.html
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
