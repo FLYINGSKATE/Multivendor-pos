@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:rdipos/AddFromInventory.dart';
+import 'package:rdipos/EnterShopName.dart';
 import 'package:rdipos/MainHomePage.dart';
 import 'package:rdipos/POSOutletScreens/pos_home_page.dart';
 import 'package:rdipos/ShopOwnerScreens/ShopOwnerHomePage.dart';
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primaryColor: Colors.black,
       ),
-      home: SuperAdminHomePage(),
+      home: EnterShopName(),
     );
   }
 }
