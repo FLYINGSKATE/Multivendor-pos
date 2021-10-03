@@ -9,34 +9,27 @@ import 'package:rdipos/ApiRepo/payments.dart';
 import 'package:rdipos/Utility/Bouncing.dart';
 import 'package:rdipos/POSOutletScreens/pos_user_profile.dart';
 import 'package:rdipos/ProductModel.dart';
-import 'package:rdipos/inventory.dart';
+import 'package:rdipos/AddFromInventory.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
 import 'package:spring/spring.dart';
 
 
 class POSHomePage extends StatefulWidget {
-  const POSHomePage({Key? key}) : super(key: key);
+
+  final List<Map<String,dynamic>> bill;
+
+  const POSHomePage({Key? key,required this.bill}) : super(key: key);
 
   @override
   _POSHomePageState createState() => _POSHomePageState();
 }
 
 class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin{
-  List<int> text = [1,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4,2,3,4];
 
   bool quantityMode = false;
   bool DiscMode = false;
   bool PriceMode = false;
   bool plusMode = false;
-
-  List<ProductModel> productOnList = [
-    ProductModel("Pepsi", 10.0),
-    ProductModel("Mazza", 10.0),
-    ProductModel("Coca Cola", 10.0),
-    ProductModel("Lays", 5.0),
-    ProductModel("Milki Bikis", 20.0),
-    ProductModel("Broccoli", 40.0),
-  ];
 
   double totalValue = 0.0;
 
@@ -58,11 +51,21 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
     super.initState();
     controller = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
 
+    //Adding Products to bill
+    for(Map<String,dynamic> singleProduct in widget.bill){
+      int priceTemp = int.parse(singleProduct["Product Price"]) * int.parse(singleProduct["ProductStock"]);
+      tempPrice = tempPrice+priceTemp;
+      int stockTemp = int.parse(singleProduct["ProductStock"]);
+      tempQuantity = tempQuantity+stockTemp;
+    }
+
     offset = Tween<Offset>(begin: Offset.zero, end: Offset(0.0, 1.0)).animate(controller);
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+
+
   }
 
   @override
@@ -148,8 +151,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
         child: SingleChildScrollView(
           child: Column(
             children: [
-              for ( var i in text ) Column(
-                children: [SizedBox(height: 20,),Product()],
+              Column(children: [SizedBox(height: 20,)],
               )
             ],
           ),
@@ -198,7 +200,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
     );
   }
 
-  TopPanel() {
+  /*TopPanel() {
     return Container(
       color: Colors.white10,
       width: MediaQuery.of(context).size.width,
@@ -212,6 +214,30 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                   Product(),
                 ],
               ),
+            ),
+          ),
+          TotalFooter(),
+        ],
+      ),
+    );
+  }*/
+  TopPanel() {
+    return Container(
+      color: Colors.white10,
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        children: [
+          BillHeader(),
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: widget.bill.length,
+              itemBuilder: (BuildContext context, int index){
+                return Product(
+                    widget.bill[index]['ProductName'],
+                    int.parse(widget.bill[index]['ProductStock'])*int.parse(widget.bill[index]['Product Price']),
+                    int.parse(widget.bill[index]['ProductStock']));
+              },
             ),
           ),
           TotalFooter(),
@@ -259,12 +285,15 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
       ],
     );
   }
-  Widget Product(){
+
+
+  Widget Product(String productName,int productPrice,int productStock){
+
     return Row(
       children: [
         Expanded(
           flex: 5,
-          child: Text('Pepsi Cola', textAlign: TextAlign.left, style: TextStyle(
+          child: Text('$productName', textAlign: TextAlign.left, style: TextStyle(
               color: Color.fromRGBO(38, 50, 56, 1),
               fontFamily: 'Inter',
               fontSize: 24,
@@ -275,7 +304,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
         ),
         Expanded(
           flex: 2,
-          child: Text('$tempQuantity', textAlign: TextAlign.center, style: TextStyle(
+          child: Text(productStock.toString(), textAlign: TextAlign.center, style: TextStyle(
               color: Color.fromRGBO(38, 50, 56, 1),
               fontFamily: 'Inter',
               fontSize: 16,
@@ -286,7 +315,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
         ),
         Expanded(
           flex: 2,
-          child: Text('$tempPrice ₹', textAlign: TextAlign.center, style: TextStyle(
+          child: Text( productPrice.toString()+'₹', textAlign: TextAlign.center, style: TextStyle(
               color: Color.fromRGBO(38, 50, 56, 1),
               fontFamily: 'Inter',
               fontSize: 16,
@@ -449,7 +478,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                         child: MaterialButton(
                           onPressed: () => {Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => InventoryPanel()),
+                            MaterialPageRoute(builder: (context) => AddFromInventoryPanel()),
                           )},
                           color: Colors.black,
                           padding: EdgeInsets.all(10.0),

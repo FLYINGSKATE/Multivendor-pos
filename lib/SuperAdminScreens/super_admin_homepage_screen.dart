@@ -10,6 +10,7 @@ import 'package:rdipos/ApiRepo/FirebaseRepo.dart';
 import 'package:rdipos/SuperAdminScreens/ShopDetailsScreen.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
 
+
 class SuperAdminHomePage extends StatefulWidget {
   const SuperAdminHomePage({Key? key}) : super(key: key);
 
@@ -51,7 +52,7 @@ class _SuperAdminHomePageState extends State<SuperAdminHomePage> {
           curve: Curves.ease,
           duration: Duration(milliseconds: 200),
         ),
-        navBarStyle: NavBarStyle.style1, // Choose the nav bar style with this property.
+        navBarStyle: NavBarStyle.style2, // Choose the nav bar style with this property.
       ),
     );
   }
@@ -100,130 +101,132 @@ class AdminDashboard extends StatefulWidget {
 }
 
 class _AdminDashboardState extends State<AdminDashboard> {
+
   int totalNoOfShops = 0;
   int totalNoOfBlockedShops = 0;
   int totalNoOfRunningShops = 0;
+
+  void CalculateTotalNoOfShops(){
+    totalNoOfShops = totalNoOfBlockedShops + totalNoOfRunningShops;
+    print("Total No Of Shops"+totalNoOfBlockedShops.toString());
+    print("Total No Of Shops"+totalNoOfRunningShops.toString());
+    print("Total No Of Shops"+totalNoOfShops.toString());
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    initializeCounter();
-    setState(() {
-
-    });
   }
+
   @override
   Widget build(BuildContext context) {
-
-
-
-    return Container(
-        color: Colors.black,
-        child:Column(
-      children: [
-          SizedBox(height: 20,),
-          Card(
-            color: Colors.black,
-            shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20), // if you need this
-                side: BorderSide(
-                color: Colors.grey.withOpacity(0.2),
-                width: 4,
-              ),
-            ),
-            child: BlurryContainer(
-              bgColor: Colors.black12,
-              width: MediaQuery.of(context).size.width/0.9,
-              height: 200,
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child:Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("All Shops",style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 20,color: Colors.white)),
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(Icons.home,color: Colors.white,size: 60,),
-                            Text(totalNoOfShops.toString(),textAlign:TextAlign.center,style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 40,color: Colors.white,fontWeight: FontWeight.bold)),
-                          ],),
-                      ],
+    return StreamBuilder<QuerySnapshot?>(
+      stream: FirebaseFirestore.instance.collection('/ShopList').where("ShopStatus", isEqualTo: "Running").snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          totalNoOfRunningShops = snapshot.data!.docs.length;
+          final List<DocumentSnapshot> documents = snapshot.data!.docs as List<DocumentSnapshot>;
+          return Container(
+              color: Colors.black,
+              child:Column(
+                children: [
+                  SizedBox(height: 20,),
+                  Card(
+                    color: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20), // if you need this
+                      side: BorderSide(
+                        color: Colors.grey.withOpacity(0.2),
+                        width: 4,
+                      ),
                     ),
-                    SizedBox(width: 30,),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Running Shops",style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 14,color: Colors.white)),
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.play_arrow,color: Colors.white,size: 40,),
-                            Text(totalNoOfRunningShops.toString(),textAlign:TextAlign.center,style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 30,color: Colors.white,fontWeight: FontWeight.bold)),
-                          ],),
-                      ],
-                    ),
-                    SizedBox(width: 20,),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Blocked Shops",style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 14,color: Colors.white)),
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.block,color: Colors.white,size: 40,),
-                            Text(totalNoOfBlockedShops.toString(),textAlign:TextAlign.center,style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 30,color: Colors.white,fontWeight: FontWeight.bold)),
-                          ],),
-                      ],
-                    ),
-                  ],
-                )
-            ),
-          ),),
-          SizedBox(height: 20,),
-          Expanded(child: AllShopList(),),
-
-      ],
-    ));
-  }
-
-  AllShopList() {
-    String shopName = "";
-    return FutureBuilder(
-      builder: (context, projectSnap) {
-        if (projectSnap.connectionState == ConnectionState.none &&
-            projectSnap.hasData == null) {
-          //print('project snapshot data is: ${projectSnap.data}');
-          return CircularProgressIndicator();
+                    child: BlurryContainer(
+                      bgColor: Colors.black12,
+                      width: MediaQuery.of(context).size.width/0.9,
+                      height: 200,
+                      child:  StreamBuilder<QuerySnapshot?>(
+                          stream: FirebaseFirestore.instance.collection('/ShopList').where("ShopStatus", isEqualTo: "Blocked").snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              totalNoOfBlockedShops = snapshot.data!.docs.length;
+                              CalculateTotalNoOfShops();
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("All Shops",style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 20,color: Colors.white)),
+                                      SizedBox(height: 10),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Icon(Icons.home,color: Colors.white,size: 60,),
+                                          Text(totalNoOfShops.toString(),textAlign:TextAlign.center,style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 40,color: Colors.white,fontWeight: FontWeight.bold)),
+                                        ],),
+                                    ],
+                                  ),
+                                  SizedBox(width: 30,),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("Running Shops",style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 14,color: Colors.white)),
+                                      SizedBox(height: 10),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.play_arrow,color: Colors.white,size: 40,),
+                                          Text(totalNoOfRunningShops.toString(),textAlign:TextAlign.center,style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 30,color: Colors.white,fontWeight: FontWeight.bold)),
+                                        ],),
+                                    ],
+                                  ),
+                                  SizedBox(width: 20,),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("Blocked Shops",style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 14,color: Colors.white)),
+                                      SizedBox(height: 10),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.block,color: Colors.white,size: 40,),
+                                          Text(totalNoOfBlockedShops.toString(),textAlign:TextAlign.center,style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 30,color: Colors.white,fontWeight: FontWeight.bold)),
+                                        ],),
+                                    ],
+                                  ),
+                                ],
+                              );}
+                            else{
+                              return Text("");
+                            }}
+                    ),),),
+                  SizedBox(height: 20,),
+                  Expanded(child: ListView.builder(
+                    itemCount: documents.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: <Widget>[
+                          // Widget to display the list of project
+                          ShopCard(documents.elementAt(index).id,Icon(Icons.block)),
+                        ],
+                      );
+                    },
+                  ),),
+                ],
+              ));
+        } else {
+          return Center(child:CircularProgressIndicator(color: Colors.black,));
         }
-        if(projectSnap==null){
-          return Container();
-        }
-        final List<DocumentSnapshot> documents = projectSnap.data as List<DocumentSnapshot>;
-        totalNoOfShops = documents.length;
-        return ListView.builder(
-          itemCount: documents.length,
-          itemBuilder: (context, index) {
-            return Column(
-              children: <Widget>[
-                // Widget to display the list of project
-                ShopCard(documents.elementAt(index).id,Icon(Icons.block)),
-              ],
-            );
-          },
-        );
       },
-      future: FirebaseRepo().FetchListOfAllUnblockedShops(),
     );
   }
+
+
 
 
   Widget ShopCard(String shopName,Icon iconsData) {
@@ -249,10 +252,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 child:IconButton(
                   iconSize: 36,
                   icon: iconsData,
-                  onPressed: (){
-                    FirebaseRepo().BlockShop(shopName);
-                    setState(() {
-                    });
+                  onPressed: () async {
+                    iconsData = Icon(Icons.hourglass_bottom_outlined);
+                    await FirebaseRepo().BlockShop(shopName);
                   },
                 ) ,
               ),
@@ -276,18 +278,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
       withNavBar: false,
       screen: ShopDetails(shopName: shopName),
     );},);
-  }
-
-  Future<void> initializeCounter() async {
-    totalNoOfBlockedShops = await FirebaseRepo().FetchNumberOfBlockedShops();
-    totalNoOfRunningShops = await FirebaseRepo().FetchNumberOfRunningShops();
-    totalNoOfShops = totalNoOfBlockedShops + totalNoOfRunningShops;
-    print("Total No Of Shops"+totalNoOfBlockedShops.toString());
-    print("Total No Of Shops"+totalNoOfRunningShops.toString());
-    print("Total No Of Shops"+totalNoOfShops.toString());
-    setState(() {
-
-    });
   }
 }
 
@@ -434,9 +424,7 @@ class _AddShopState extends State<AddShop> {
                             ),
                           ));
                           return;
-
                         }
-
                       },
                       child: Text('ADD SHOP',maxLines: 1,),
                       style: ElevatedButton.styleFrom(
@@ -474,78 +462,74 @@ class BlockShopList extends StatefulWidget {
 }
 
 class _BlockShopListState extends State<BlockShopList> {
+
+
   @override
-  Widget build(BuildContext context) {
-    try {
-      return Container(
-          color: Colors.black,
-          child:Column(
-            children: [
-              SizedBox(height: 20,),
-              Card(
-                color: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20), // if you need this
-                  side: BorderSide(
-                    color: Colors.grey.withOpacity(0.2),
-                    width: 4,
-                  ),
-                ),
-                child: BlurryContainer(
-                  bgColor: Colors.black12,
-                  width: MediaQuery.of(context).size.width/0.9,
-                  height: 200,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Blocked Shops",style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 20,color: Colors.white)),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.home,color: Colors.white,size: 60,),
-                          Text("1",textAlign:TextAlign.center,style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 40,color: Colors.white,fontWeight: FontWeight.bold)),
-                        ],)
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 20,),
-              Expanded(child: AllBlockedShopList(),),
-            ],
-          ));
-    }
-    catch(e) {
-      return Container(height:200,color:Colors.red);
-    }
+  void initState() {
+    // TODO: implement initState
+    super.initState();
   }
 
-  AllBlockedShopList() {
-    String shopName = "";
-    return FutureBuilder(
-      builder: (context, projectSnap) {
-        if (projectSnap.connectionState == ConnectionState.none &&
-            projectSnap.hasData == null) {
-          //print('project snapshot data is: ${projectSnap.data}');
-          return CircularProgressIndicator();
-        }
-        final List<DocumentSnapshot> documents = projectSnap.data as List<DocumentSnapshot>;
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot?>(
+        stream: FirebaseFirestore.instance.collection('/ShopList').where("ShopStatus", isEqualTo: "Blocked").snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+            int totalNoOfBlockedShops = snapshot.data!.docs.length;
+            final List<DocumentSnapshot> documents = snapshot.data!.docs as List<DocumentSnapshot>;
+            return Container(
+                color: Colors.black,
+                child:Column(
+                  children: [
+                    SizedBox(height: 20,),
+                    Card(
+                      color: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20), // if you need this
+                        side: BorderSide(
+                          color: Colors.grey.withOpacity(0.2),
+                          width: 4,
+                        ),
+                      ),
+                      child: BlurryContainer(
+                        bgColor: Colors.black12,
+                        width: MediaQuery.of(context).size.width/0.9,
+                        height: 200,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Blocked Shops",style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 20,color: Colors.white)),
+                            SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.block,color: Colors.white,size: 60,),
+                                Text(totalNoOfBlockedShops.toString(),textAlign:TextAlign.center,style:TextStyle(fontFamily: "MPLUSRounded",fontSize: 40,color: Colors.white,fontWeight: FontWeight.bold)),
+                              ],)
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20,),
+                    Expanded(child:ListView.builder(
 
-        return ListView.builder(
-          itemCount: documents.length,
-          itemBuilder: (context, index) {
-            return Column(
-              children: <Widget>[
-                // Widget to display the list of project
-                ShopCard(documents.elementAt(index).id,Icon(Icons.play_arrow)),
-              ],
-            );
-          },
-        );
-      },
-      future: FirebaseRepo().FetchListOfBlockedShops(),
-    );
+                      itemCount: documents.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: <Widget>[
+                            // Widget to display the list of project
+                            ShopCard(documents.elementAt(index).id,Icon(Icons.play_arrow)),
+                          ],
+                        );
+                      },
+                    ),),
+                  ],
+                ));
+          }
+          else{return CircularProgressIndicator(color: Colors.white,);}
+        });
   }
 
   Widget ShopCard(String shopName,Icon iconsData) {
@@ -571,10 +555,8 @@ class _BlockShopListState extends State<BlockShopList> {
                   child:IconButton(
                     iconSize: 36,
                     icon: iconsData,
-                    onPressed: (){
-                      FirebaseRepo().UnBlockShop(shopName);
-                      setState(() {
-                      });
+                    onPressed: () async {
+                      await FirebaseRepo().UnBlockShop(shopName);
                     },
                   ) ,
                 ),

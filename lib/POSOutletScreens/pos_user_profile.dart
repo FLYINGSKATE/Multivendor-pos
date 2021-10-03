@@ -88,9 +88,9 @@ class _POSUserProfileState extends State<POSUserProfile> {
             onPress: () {  },
             child: MaterialButton(
               onPressed: () async {
+                Map<String,dynamic> map={};
                 //await Future.delayed(const Duration(milliseconds: 100), (){});
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (BuildContext context) => POSHomePage()));
+
               },
               color: Colors.red,
               textColor: Colors.white,

@@ -138,4 +138,30 @@ class WidgetHelper{
     );
   }
 
+  CustomPrimaryRoundedButton(String TitleText ,var _onPressedFunction ){
+    return ElevatedButton(
+      onPressed: _onPressedFunction,
+      child: Text('$TitleText'),
+      style: ElevatedButton.styleFrom(
+        shape: StadiumBorder(),
+        primary: Colors.red,
+        padding: EdgeInsets.symmetric(horizontal: 150, vertical: 25),
+        textStyle: TextStyle(color: Colors.grey[100],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+      ),
+    );
+  }
+
+  CustomSecondaryRoundedButton(String TitleText ,var _onPressedFunction ){
+    return ElevatedButton(
+      onPressed: _onPressedFunction,
+      child: Text('$TitleText'),
+      style: ElevatedButton.styleFrom(
+        shape: StadiumBorder(),
+        primary: Colors.black,
+        padding: EdgeInsets.symmetric(horizontal: 150, vertical: 25),
+        textStyle: TextStyle(color: Colors.white,fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+      ),
+    );
+  }
+
 }

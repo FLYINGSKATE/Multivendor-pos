@@ -16,8 +16,6 @@ import 'package:rdipos/Utility/widget_helper.dart';
 import 'ShopOwnerTabs/AddPOSOutletScreen.dart';
 import 'ShopOwnerTabs/POSOutletListScreen.dart';
 
-
-
 class ShopOwnerHomePage extends StatefulWidget {
   const ShopOwnerHomePage({Key? key}) : super(key: key);
 
