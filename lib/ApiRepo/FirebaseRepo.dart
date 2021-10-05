@@ -35,13 +35,13 @@ class FirebaseRepo {
 
   RemovePOSOutlet(){}
 
-  Future<String> AddStock (String ProductName,String amountOFSKU) async{
-    String newAmountSKU = await FetchStockUnit(ProductName);
+  Future<String> AddStock (String shopName,String ProductName,String amountOFSKU) async{
+    String newAmountSKU = await FetchStockUnit(shopName,ProductName);
     int nStockValue = ((int.parse(newAmountSKU))+(int.parse(amountOFSKU)));
     print("New Stock Values : "+nStockValue.toString());
     amountOFSKU = nStockValue.toString();
     print("Adding $amountOFSKU Stock to $ProductName");
-    await FirebaseFirestore.instance.collection("/ShopList").doc("Apunki Dukaan").collection("ProductList").doc("$ProductName").update(
+    await FirebaseFirestore.instance.collection("/ShopList").doc(shopName).collection("ProductList").doc("$ProductName").update(
         {
           "ProductStock" : amountOFSKU,
         }).whenComplete((){ return "Congratulations! Stock Added Successfully!";}).onError((error, stackTrace){ return "Oops ! Something Went Wrong!";});
@@ -50,8 +50,8 @@ class FirebaseRepo {
   }
 
 
-  Future<bool> RemoveStock (String ProductName,String amountOFSKU) async{
-    String newAmountSKU = await FetchStockUnit(ProductName);
+  Future<bool> RemoveStock (String shopName,String ProductName,String amountOFSKU) async{
+    String newAmountSKU = await FetchStockUnit(shopName,ProductName);
     int nStockValue = ((int.parse(newAmountSKU))-(int.parse(amountOFSKU)));
     print("New Stock Values : "+nStockValue.toString());
     amountOFSKU = nStockValue.toString();
@@ -67,11 +67,11 @@ class FirebaseRepo {
       return true;
   }
 
-  Future<String> FetchStockUnit(String ProductName) async{
+  Future<String> FetchStockUnit(String shopName,String ProductName) async{
     String StockUnit = "0";
     print("Fetching Stock Unit");
     Map<String, dynamic> productDetails;
-    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance.collection("/ShopList").doc("Apunki Dukaan").collection("ProductList").doc("$ProductName").get();
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance.collection("/ShopList").doc(shopName).collection("ProductList").doc("$ProductName").get();
     print("The Product Details WE FETCHED"+documentSnapshot.data().toString());
     productDetails = Map<String, dynamic>.from(documentSnapshot.data() as Map<String,dynamic>);
     StockUnit = productDetails["ProductStock"];
@@ -86,11 +86,11 @@ class FirebaseRepo {
 
   RemoveProduct(String ProductName,String ProductSKU,String ProductPrice,String ProductBarCode){}
 
-  Future<Map> fetchInventory() async {
+  Future<Map> fetchInventory(String shopName) async {
     Map productNameList = {};
     print("Fetching Inventory");
     try{
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("/ShopList").doc("Apunki Dukaan").collection("ProductList").get();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("/ShopList").doc(shopName).collection("ProductList").get();
       //Doc id 2 is for Products
       var a = querySnapshot.docs[2];
       productNameList = Map<String, dynamic>.from(a.data() as Map<String,dynamic>);
@@ -126,9 +126,9 @@ class FirebaseRepo {
     return shopDetails;
   }
 
-  Future<String> validatePOSUser(String userName , String password) async {
+  Future<String> validatePOSUser(String shopName,String userName , String password) async {
     Map posUserDetails = {};
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("/Aflatoon General Store").doc("POSOutlets").collection("AandeRam").get();
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection(shopName).doc("POSOutlets").collection(userName).get();
     if (querySnapshot.docs.length == 0) {
       //doesnt exist
       print("No POS Outlet Found.");
@@ -267,31 +267,32 @@ class FirebaseRepo {
   }
 
   Future<bool> ShopAlreadyExsists(String shopName) async{
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("/ShopList").where("ShopName", isEqualTo: "$shopName").get();
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("/ShopList").where("ShopUserName", isEqualTo: "$shopName").get();
+    if(querySnapshot.docs.length!=0){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  Future<bool> ProductAlreadyExsists(String shopName,String productName) async{
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("/ShopList").doc(shopName).collection("ProductList").where("ProductName", isEqualTo: "$productName").get();
     if(querySnapshot.docs.isNotEmpty){
       return true;
     }
     return false;
   }
 
-  Future<bool> ProductAlreadyExsists(String productName) async{
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("/ShopList").doc("Apunki Dukaan").collection("ProductList").where("ProductName", isEqualTo: "$productName").get();
-    if(querySnapshot.docs.isNotEmpty){
-      return true;
-    }
-    return false;
-  }
-
-  Future<String> AddNewProduct(String productName,String productPrice,String productStock,String sellerContact,String productBarCode) async {
+  Future<String> AddNewProduct(String shopName,String productName,String productPrice,String productStock,String sellerContact,String productBarCode) async {
     print("Adding New Product");
-    bool productAlreadyExists = await ProductAlreadyExsists(productName);
+    bool productAlreadyExists = await ProductAlreadyExsists(shopName,productName);
     print("Product Already Exists"+productAlreadyExists.toString());
     if(productAlreadyExists){
       return "Oh! No Product Already Exists";
     }
     else{
       //final QuerySnapshot result = await await FirebaseFirestore.instance.collection('/ShopList').get();
-      await FirebaseFirestore.instance.collection("/ShopList").doc("Apunki Dukaan").collection("ProductList").doc("$productName").set(
+      await FirebaseFirestore.instance.collection("/ShopList").doc(shopName).collection("ProductList").doc("$productName").set(
           {
             "ProductName" : productName,
             "ProductStock" : productStock,
@@ -301,6 +302,11 @@ class FirebaseRepo {
           }).whenComplete((){ return "Congratulations! Product Added Successfully!";}).onError((error, stackTrace){ return "Oops ! Something Went Wrong!";});
     }
     return "Congratulations! Product Added Successfully!";
+  }
+
+  Future<String> fetchShopAPIKey(String ShopName) async {
+    await Future.delayed(const Duration(seconds: 1), (){});
+    return "rzp_test_dojmbldJSpz91g";
   }
   ////await Firestore.instance.collection('Stores').document(widget.currentUserUID).collection("Stores").getDocuments();
 }

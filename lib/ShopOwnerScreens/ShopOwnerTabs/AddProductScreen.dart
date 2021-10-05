@@ -11,7 +11,8 @@ import 'package:rdipos/ApiRepo/FirebaseRepo.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
 
 class AddProductScreen extends StatefulWidget {
-  const AddProductScreen({Key? key}) : super(key: key);
+  final String shopName;
+  const AddProductScreen({Key? key, required this.shopName}) : super(key: key);
 
   @override
   _AddProductScreenState createState() => _AddProductScreenState();
@@ -136,7 +137,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             ) {
                               tempBarcode = await GenerateBarcodeForProduct();
                               String AddProductMessage = await FirebaseRepo()
-                                  .AddNewProduct(
+                                  .AddNewProduct(widget.shopName,
                                   _productNameTextEditingController.text
                                       .trim(),
                                   _productPriceTextEditingController.text

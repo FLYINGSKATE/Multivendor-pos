@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:rdipos/ApiRepo/payments.dart';
+import 'package:rdipos/POSOutletScreens/CheckOutScreen.dart';
 import 'package:rdipos/Utility/Bouncing.dart';
 import 'package:rdipos/POSOutletScreens/pos_user_profile.dart';
 import 'package:rdipos/ProductModel.dart';
@@ -15,10 +16,10 @@ import 'package:spring/spring.dart';
 
 
 class POSHomePage extends StatefulWidget {
-
+  final String shopName;
   final List<Map<String,dynamic>> bill;
 
-  const POSHomePage({Key? key,required this.bill}) : super(key: key);
+  const POSHomePage({Key? key,required this.bill, required this.shopName}) : super(key: key);
 
   @override
   _POSHomePageState createState() => _POSHomePageState();
@@ -437,7 +438,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                         child: FlatButton(
                           onPressed: () => {
                             if(kIsWeb){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => Webpayment(price: 200000)),)
+                              Navigator.push(context, MaterialPageRoute(builder: (context) =>CheckoutScreen(shopName: widget.shopName, price: 2 ,)))
                             }
                             else{
                               openCheckout()
@@ -478,7 +479,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                         child: MaterialButton(
                           onPressed: () => {Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => AddFromInventoryPanel()),
+                            MaterialPageRoute(builder: (context) => AddFromInventoryPanel(shopName:widget.shopName,bill:widget.bill)),
                           )},
                           color: Colors.black,
                           padding: EdgeInsets.all(10.0),

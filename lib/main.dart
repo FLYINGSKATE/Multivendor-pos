@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:rdipos/AddFromInventory.dart';
 import 'package:rdipos/EnterShopName.dart';
 import 'package:rdipos/MainHomePage.dart';
+import 'package:rdipos/POSOutletScreens/CheckOutScreen.dart';
+import 'package:rdipos/POSOutletScreens/owner_pos_homepage.dart';
 import 'package:rdipos/POSOutletScreens/pos_home_page.dart';
 import 'package:rdipos/ShopOwnerScreens/ShopOwnerHomePage.dart';
 

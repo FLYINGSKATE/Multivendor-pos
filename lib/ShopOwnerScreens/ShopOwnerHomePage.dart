@@ -17,7 +17,9 @@ import 'ShopOwnerTabs/AddPOSOutletScreen.dart';
 import 'ShopOwnerTabs/POSOutletListScreen.dart';
 
 class ShopOwnerHomePage extends StatefulWidget {
-  const ShopOwnerHomePage({Key? key}) : super(key: key);
+
+  final String shopName;
+  const ShopOwnerHomePage({Key? key, required this.shopName}) : super(key: key);
 
   @override
   _ShopOwnerHomePageState createState() => _ShopOwnerHomePageState();
@@ -64,10 +66,10 @@ class _ShopOwnerHomePageState extends State<ShopOwnerHomePage> {
 
   List<Widget> _buildScreens() {
     return [
-      AddPOSOutletScreen(),
-      InventoryScreen(),
-      POSOutletList(),
-      AddProductScreen(),
+      AddPOSOutletScreen(shopName: widget.shopName,),
+      InventoryScreen(shopName: widget.shopName,),
+      POSOutletList(shopName: widget.shopName,),
+      AddProductScreen(shopName: widget.shopName,),
     ];
   }
 

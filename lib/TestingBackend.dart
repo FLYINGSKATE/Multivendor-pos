@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:rdipos/ApiRepo/FirebaseRepo.dart';
 
 class BackendTest extends StatefulWidget {
-  const BackendTest({Key? key}) : super(key: key);
+  final String shopName;
+
+  const BackendTest({Key? key,required this.shopName}) : super(key: key);
 
   @override
   _BackendTestState createState() => _BackendTestState();
@@ -240,7 +242,7 @@ class _BackendTestState extends State<BackendTest> {
                         )
                     )
                 ),
-                onPressed: () => FirebaseRepo().fetchInventory()
+                onPressed: () => FirebaseRepo().fetchInventory(widget.shopName)
             ),
             SizedBox(height: 10,),
             Text("aks;ka"),

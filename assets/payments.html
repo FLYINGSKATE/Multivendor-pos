@@ -11,14 +11,20 @@
    const name = urlParams.get('name')
    const price = urlParams.get('price')
    const image = urlParams.get('image')
-   //const email = urlParams.get('email')
+   const email = urlParams.get('email')
+   const mobile = urlParams.get('mobile')
+   const apikey = urlParams.get('apikey')
+   const shopname = urlParams.get('shopname')
+   const description = urlParams.get('description')
 
       options = {
-         "key": "rzp_test_dojmbldJSpz91g",
+         "key": apikey,
           "amount": price, "currency": "INR",
-          "name":"Local Company",
-          "description": name,
+          "name":shopname,
+          "description": description,
           "image":image,
+
+
           "handler": function (response){
              window.parent.postMessage("SUCCESS","*");      //2
              alert(response.razorpay_payment_id);
@@ -26,9 +32,9 @@
              alert(response.razorpay_signature)
           },
           "prefill": {
-             "name": "",
-             "email":"ashrafksalim1@gmail.com",
-             "contact":"+91-000000000"
+             "name": name,
+             "email": email,
+             "contact": mobile
            },
            "notes": {
              "address": "Autofy"

@@ -3,14 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:rdipos/AddFromInventory.dart';
+import 'package:rdipos/POSOutletScreens/pos_home_page.dart';
 import 'package:rdipos/ShopOwnerScreens/ShopOwnerHomePage.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
 
-import '../Utility/BarCodeScreen.dart';
-import 'pos_home_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final String shopName;
+  const HomePage({Key? key, required this.shopName}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -58,8 +58,8 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> _buildScreens() {
     return [
-      ShopOwnerLogin(),
-      POSLogin(),
+      ShopOwnerLogin(shopName: widget.shopName,),
+      POSLogin(shopName: widget.shopName,),
     ];
   }
 
@@ -84,7 +84,8 @@ class _HomePageState extends State<HomePage> {
 }
 
 class ShopOwnerLogin extends StatefulWidget {
-  const ShopOwnerLogin({Key? key}) : super(key: key);
+  final String shopName;
+  const ShopOwnerLogin({Key? key, required this.shopName}) : super(key: key);
 
   @override
   _ShopOwnerLoginState createState() => _ShopOwnerLoginState();
@@ -144,7 +145,7 @@ class _ShopOwnerLoginState extends State<ShopOwnerLogin> {
                               pushNewScreen(
                                 context,
                                 withNavBar: false,
-                                screen: ShopOwnerHomePage(),
+                                screen: ShopOwnerHomePage(shopName: widget.shopName,),
                               );
                             }
                             else{
@@ -216,7 +217,9 @@ class _ShopOwnerLoginState extends State<ShopOwnerLogin> {
 }
 
 class POSLogin extends StatefulWidget {
-  const POSLogin({Key? key}) : super(key: key);
+  final String shopName;
+
+  const POSLogin({Key? key, required this.shopName}) : super(key: key);
 
   @override
   _POSLoginState createState() => _POSLoginState();
@@ -274,7 +277,7 @@ class _POSLoginState extends State<POSLogin> {
                             if("admin"==_passwordTextEditingController.text){
                               print("OUTLET Login Successfully");
                               Map<String,dynamic> map={};
-                              pushNewScreen(context, withNavBar: false, screen: AddFromInventoryPanel(),);
+                              pushNewScreen(context, withNavBar: false, screen: POSHomePage(shopName: widget.shopName,bill: [],),);
                             }
                             else{
                               showPasswordErrorMessage = true;

@@ -5,7 +5,9 @@ import 'package:rdipos/Utility/widget_helper.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class POSOutletList extends StatefulWidget {
-  const POSOutletList({Key? key}) : super(key: key);
+
+  final String shopName;
+  const POSOutletList({Key? key, required this.shopName}) : super(key: key);
 
   @override
   _POSOutletListState createState() => _POSOutletListState();

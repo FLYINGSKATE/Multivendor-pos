@@ -6,7 +6,8 @@ import 'package:rdipos/Utility/widget_helper.dart';
 
 
 class AddPOSOutletScreen extends StatefulWidget {
-  const AddPOSOutletScreen({Key? key}) : super(key: key);
+  final String shopName;
+  const AddPOSOutletScreen({Key? key, required this.shopName}) : super(key: key);
 
   @override
   _AddPOSOutletScreenState createState() => _AddPOSOutletScreenState();

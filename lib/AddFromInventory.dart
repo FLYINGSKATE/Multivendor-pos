@@ -8,7 +8,10 @@ import 'POSOutletScreens/pos_home_page.dart';
 
 
 class AddFromInventoryPanel extends StatefulWidget {
-  const AddFromInventoryPanel({Key? key}) : super(key: key);
+  final String shopName;
+  final List<Map<String,dynamic>> bill;
+
+  const AddFromInventoryPanel({Key? key,required this.shopName, required this.bill}) : super(key: key);
 
   @override
   _AddFromInventoryPanelState createState() => _AddFromInventoryPanelState();
@@ -32,7 +35,7 @@ class _AddFromInventoryPanelState extends State<AddFromInventoryPanel> {
         floatingActionButton:showDoneButton?FloatingActionButton.extended(
           onPressed: (){
             Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (BuildContext context) => POSHomePage(bill: bill,)));
+                builder: (BuildContext context) => POSHomePage(bill: bill, shopName: widget.shopName,)));
           },
           backgroundColor: Colors.red,
           icon: Icon(Icons.check),
@@ -118,7 +121,7 @@ class _AddFromInventoryPanelState extends State<AddFromInventoryPanel> {
                           children: [
                             WidgetHelper().CustomSecondaryRoundedButton("Cancel", (){Navigator.pop(context);}),
                             WidgetHelper().CustomPrimaryRoundedButton("Add To Bill", () async {
-                              bool removedSuccessFully = await FirebaseRepo().RemoveStock(doc["ProductName"], _value.toString());
+                              bool removedSuccessFully = await FirebaseRepo().RemoveStock(widget.shopName,doc["ProductName"], _value.toString());
                               showDoneButton = true;
                               if(removedSuccessFully){
                                 Map<String,dynamic> tempProduct = doc.data() as Map<String,dynamic>;
@@ -179,6 +182,7 @@ class _AddFromInventoryPanelState extends State<AddFromInventoryPanel> {
   }
 
   void AddThisProductToBill(Map<String,dynamic> product) {
+    bill = widget.bill;
     bill.add(product);
   }
 

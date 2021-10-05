@@ -5,7 +5,8 @@ import 'package:rdipos/Utility/widget_helper.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class InventoryScreen extends StatefulWidget {
-  const InventoryScreen({Key? key}) : super(key: key);
+  final String shopName;
+  const InventoryScreen({Key? key, required this.shopName}) : super(key: key);
 
   @override
   _InventoryScreenState createState() => _InventoryScreenState();
@@ -71,7 +72,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                     children: [
                       WidgetHelper().CustomSecondaryRoundedButton("Cancel", (){Navigator.pop(context);}),
                       WidgetHelper().CustomPrimaryRoundedButton("Add Stock", (){
-                        FirebaseRepo().AddStock(doc["ProductName"], _value.toString());
+                        FirebaseRepo().AddStock(widget.shopName,doc["ProductName"], _value.toString());
                         setState;
                         Navigator.pop(context);
                       }),

@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rdipos/ApiRepo/FirebaseRepo.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
+
+import 'POSOutletScreens/owner_pos_homepage.dart';
 
 class EnterShopName extends StatefulWidget {
   const EnterShopName({Key? key}) : super(key: key);
@@ -21,7 +24,6 @@ class _EnterShopNameState extends State<EnterShopName> {
     return Scaffold(
       appBar: WidgetHelper().RdiAppBar(),
       body: Center(child:Container(
-        width: MediaQuery.of(context).size.width/2,
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -40,6 +42,7 @@ class _EnterShopNameState extends State<EnterShopName> {
                     border: Border.all(width: 0),
                     borderRadius: BorderRadius.all(Radius.circular(20))
                 ),
+                width: MediaQuery.of(context).size.width/1.4,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -52,16 +55,28 @@ class _EnterShopNameState extends State<EnterShopName> {
                         onPressed: ()  async {
                           String shopName = _shopNameTextEditingController.text.trim();
                           doesShopExists = await FirebaseRepo().ShopAlreadyExsists(shopName);
+                          print(shopName+" does exists "+doesShopExists.toString());
                           if(!doesShopExists){
                             showShopNameErrorMessage = true;
-                            setState(() {});
+                            setState((){});
                           }
                           else{
+                            showShopNameErrorMessage = false;
+                            setState((){});
                             ///Navigate to Shop & Pos Login Tabs with the current Shop Name;
-                            
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => HomePage(shopName: shopName,)),
+                            );
                           }
                         },
-                        child: Text('Login to Your Shop',maxLines: 1,),
+                        child: Text('Login to Your Shop',maxLines: 1,style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'MPLUSRounded',
+                            fontSize: 16,
+                            letterSpacing: 0.20000001788139343,
+                            height: 1.400000028610228
+                        ),),
                         style: ElevatedButton.styleFrom(
                           shape: StadiumBorder(),
                           primary: Colors.red,

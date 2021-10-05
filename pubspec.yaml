@@ -48,6 +48,7 @@ dependencies:
   firebase_core_web:
   path_provider: ^2.0.4
   syncfusion_flutter_sliders: ^19.2.62
+  email_validator: ^2.0.1
 
 
 dev_dependencies:

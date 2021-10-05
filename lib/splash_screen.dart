@@ -2,8 +2,6 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rdipos/MainHomePage.dart';
-import 'package:rdipos/SuperAdminScreens/super_admin_login_screen.dart';
-import 'package:rdipos/POSOutletScreens/owner_pos_homepage.dart';
 
 import 'POSOutletScreens/pos_home_page.dart';
 

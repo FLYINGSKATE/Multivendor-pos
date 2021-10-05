@@ -1,16 +1,28 @@
 import 'dart:html';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:rdipos/ApiRepo/FirebaseRepo.dart';
 import 'UiFake.dart' if (dart.library.html) 'dart:ui' as ui;
 
 class Webpayment extends StatelessWidget{
   final String? name;
   final String? image;
   final int? price;
-  Webpayment({this.name,this.price,this.image});
+  final String? mobile;
+  final String? email;
+
+  final String? shopName;
+
+  final String? shopApiKey;
+
+  final String description = "A Partner shop of RDI Digital!";
+
+  Webpayment({required this.name,required this.price,this.image,required this.mobile,required this.email, required this.shopName,required this.shopApiKey});
+
+
   @override
   Widget build(BuildContext context) {
-    ui.platformViewRegistry.registerViewFactory("rzp-html",(int viewId) {
+    ui.platformViewRegistry.registerViewFactory("rzp-html",(int viewId){
       IFrameElement element=IFrameElement();
       window.onMessage.forEach((element) {
         print('Event Received in callback: ${element.data}');
@@ -25,7 +37,7 @@ class Webpayment extends StatelessWidget{
         //});
       });
 
-      element.src='assets/payments.html?name=$name&price=$price&image=$image';
+      element.src='assets/payments.html?name=$name&price=$price&image=$image&email=$email&mobile=$mobile&apikey=$shopApiKey&shopname=$shopName&shopdescription=$description';
       element.style.border = 'none';
 
       return element;
@@ -37,5 +49,6 @@ class Webpayment extends StatelessWidget{
           );
         }));
   }
+
 
 }

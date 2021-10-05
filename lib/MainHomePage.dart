@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rdipos/EnterShopName.dart';
 import 'package:rdipos/POSOutletScreens/pos_home_page.dart';
 import 'package:rdipos/SuperAdminScreens/super_admin_login_screen.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
@@ -198,7 +199,7 @@ class LandingPage extends StatelessWidget {
                 child: TextButton(
                     onPressed: (){
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => HomePage()));
+                          builder: (BuildContext context) => EnterShopName()));
                     },
                     child :Text(
                   "Shop/POS Login",
