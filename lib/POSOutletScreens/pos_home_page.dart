@@ -153,7 +153,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                         focusNode: _posBarcodeTextFieldFocusNode,
                         onTap: _requestPosBarcodeTextFieldFocusNode,
                         onChanged: (value) async {
-                          if(value.length>=13){
+                          if(value.length>=10){
                             //Remove Product From to Stock
                             print(value);
                             Map<String,dynamic>? productDetails = await FirebaseRepo().FetchProductFromBarcode(widget.shopName,value);
