@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primaryColor: Colors.black,
       ),
-      home: POSHomePage(shopName: "Apunki Dukaan",bill: [],),
+      home: MainHomePage(),
       //home: MainHomePage(),
     );
   }

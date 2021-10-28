@@ -191,6 +191,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             _showProductNameErrorMessgae =
                                 _productNameTextEditingController.text
                                     .isEmpty;
+                            _showProductBarCodeErrorMessage =
+                                _productBarCodeTextEditingController.text
+                                    .isEmpty;
                             _showProductPriceErrorMessage =
                                 _productPriceTextEditingController.text
                                     .isEmpty;
@@ -208,11 +211,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 _productPriceTextEditingController.text
                                     .isNotEmpty)
                                 && (_productStockTextEditingController.text
-                                    .isNotEmpty)) &&
-                                (_productSellerContactNumberTextEditingController
+                                    .isNotEmpty)) && (_productBarCodeTextEditingController.text.isNotEmpty &&
+                                _productSellerContactNumberTextEditingController
                                     .text.isNotEmpty)
                             ) {
-                              tempBarcode = await GenerateBarcodeForProduct();
+
                               String AddProductMessage = await FirebaseRepo()
                                   .AddNewProduct(widget.shopName,
                                   _productNameTextEditingController.text
@@ -222,7 +225,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                   _productStockTextEditingController.text
                                       .trim(),
                                   _productSellerContactNumberTextEditingController
-                                      .text.trim(), tempBarcode);
+                                      .text.trim(), _productBarCodeTextEditingController.text.trim());
                               print(AddProductMessage);
                               _productNameTextEditingController.text = "";
                               _productPriceTextEditingController.text = "";
@@ -303,6 +306,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 
+
+  ///Legacy Methods used for Product Stock
   ProductBarCodeGenerateSection() {
     return Container(
       width: MediaQuery

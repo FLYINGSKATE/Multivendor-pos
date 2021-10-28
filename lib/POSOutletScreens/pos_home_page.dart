@@ -141,40 +141,52 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
       body: OrientationBuilder(
         builder: (context, orientation) {
           if(orientation==Orientation.landscape){
-            return Row(
+            return Column(
               children: [
                 Expanded(
-                  child: TextField(
-                    autofocus: true,
-                    focusNode: _posBarcodeTextFieldFocusNode,
-                    onTap: _requestPosBarcodeTextFieldFocusNode,
-                    onChanged: (value) async {
-                      if(value.length>=13){
-                        //Remove Product From to Stock
-                        print(value);
-                        Map<String,dynamic>? productDetails = await FirebaseRepo().FetchProductFromBarcode(widget.shopName,value);
-                        if(productDetails==null){
-                          SnackBar(
-                            backgroundColor: Colors.black,
-                            content: Text(
-                              "Product Doesn't Exists - Contact Shop Owner",
-                              style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
-                            ),
-                          );
-                          return;
-                        }
-                        await FirebaseRepo().RemoveStock(widget.shopName, productDetails["ProductName"],"1").then((value) =>AddProductToBill(productDetails));
-                      }
-                    },
+                  flex:1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(child:TextField(
+                        autofocus: true,
+                        focusNode: _posBarcodeTextFieldFocusNode,
+                        onTap: _requestPosBarcodeTextFieldFocusNode,
+                        onChanged: (value) async {
+                          if(value.length>=13){
+                            //Remove Product From to Stock
+                            print(value);
+                            Map<String,dynamic>? productDetails = await FirebaseRepo().FetchProductFromBarcode(widget.shopName,value);
+                            if(productDetails==null){
+                              SnackBar(
+                                backgroundColor: Colors.black,
+                                content: Text(
+                                  "Product Doesn't Exists - Contact Shop Owner",
+                                  style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+                                ),
+                              );
+                              return;
+                            }
+                            await FirebaseRepo().RemoveStock(widget.shopName, productDetails["ProductName"],"1").then((value) =>AddProductToBill(productDetails));
+                          }
+                        },
+                      )),
+                    ],
                   ),
                 ),
                 Expanded(
-                  flex: 6,
-                  child: TopPanel(),
-                ),
-                Expanded(
-                    flex: 5,
-                    child: BottomPanel()),
+                  flex:9,
+                  child:Row(
+                  children: [
+                    Expanded(
+                      flex: 6,
+                      child: TopPanel(),
+                    ),
+                    Expanded(
+                        flex: 5,
+                        child: BottomPanel()),
+                  ],
+                ),),
               ],
             );
           }

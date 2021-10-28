@@ -192,19 +192,17 @@ class LandingPage extends StatelessWidget {
               color: Colors.white,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0))),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => EnterShopName()));
+              },
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                     vertical: 20.0, horizontal: 40.0),
-                child: TextButton(
-                    onPressed: (){
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => EnterShopName()));
-                    },
-                    child :Text(
+                child: Text(
                   "Shop/POS Login",
                   style: TextStyle(color: Colors.red),
-                )),
+                ),
               ),
             )
           ],
