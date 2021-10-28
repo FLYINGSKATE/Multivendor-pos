@@ -5,8 +5,12 @@ import 'package:rdipos/EnterShopName.dart';
 import 'package:rdipos/MainHomePage.dart';
 import 'package:rdipos/POSOutletScreens/CheckOutScreen.dart';
 import 'package:rdipos/POSOutletScreens/owner_pos_homepage.dart';
+import 'package:rdipos/POSOutletScreens/payment_success_screen.dart';
 import 'package:rdipos/POSOutletScreens/pos_home_page.dart';
 import 'package:rdipos/ShopOwnerScreens/ShopOwnerHomePage.dart';
+import 'package:rdipos/ShopOwnerScreens/ShopOwnerTabs/AddProductScreen.dart';
+import 'package:rdipos/Utility/BarCodeScreen.dart';
+import 'package:rdipos/Utility/ScanWithGun.dart';
 
 import 'SuperAdminScreens/super_admin_homepage_screen.dart';
 
@@ -20,6 +24,8 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
+final navigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   Map<String,dynamic> map = {};
 
@@ -29,6 +35,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'POS Demo',
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -41,7 +48,8 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primaryColor: Colors.black,
       ),
-      home: EnterShopName(),
+      home: POSHomePage(shopName: "Apunki Dukaan",bill: [],),
+      //home: MainHomePage(),
     );
   }
 }

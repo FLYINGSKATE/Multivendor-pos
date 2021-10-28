@@ -28,7 +28,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: WidgetHelper().RdiAppBar(),
+      appBar: WidgetHelper().RdiAppBar(context),
       body: Center(child:Container(
         width: MediaQuery.of(context).size.width/2,
         child: Column(

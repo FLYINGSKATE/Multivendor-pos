@@ -24,7 +24,7 @@ class _ShopDetailsState extends State<ShopDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: WidgetHelper().RdiAppBar(),
+      appBar: WidgetHelper().RdiAppBar(context),
       body: SizedBox(
         width: double.infinity,
         child: Center(

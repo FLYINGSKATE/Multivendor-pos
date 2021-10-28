@@ -25,7 +25,7 @@ class _SuperAdminLoginPageState extends State<SuperAdminLoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: WidgetHelper().RdiAppBar(),
+        appBar: WidgetHelper().RdiAppBarWithNoContext(),
         body:SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10.0,100,10.0,100),

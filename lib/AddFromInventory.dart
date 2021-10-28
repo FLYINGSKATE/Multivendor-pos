@@ -31,7 +31,7 @@ class _AddFromInventoryPanelState extends State<AddFromInventoryPanel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: WidgetHelper().RdiAppBar(),
+        appBar: WidgetHelper().RdiAppBar(context),
         floatingActionButton:showDoneButton?FloatingActionButton.extended(
           onPressed: (){
             Navigator.of(context).pushReplacement(MaterialPageRoute(

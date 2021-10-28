@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -9,6 +8,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:rdipos/ApiRepo/FirebaseRepo.dart';
 import 'package:rdipos/SuperAdminScreens/ShopDetailsScreen.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
+import 'dart:html' as html;
 
 
 class SuperAdminHomePage extends StatefulWidget {
@@ -25,7 +25,7 @@ class _SuperAdminHomePageState extends State<SuperAdminHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: WidgetHelper().RdiAppBar(),
+      appBar: WidgetHelper().RdiAppBar(context),
       body: PersistentTabView(
         context,
         controller: _controller,
@@ -59,8 +59,8 @@ class _SuperAdminHomePageState extends State<SuperAdminHomePage> {
 
   List<Widget> _buildScreens() {
     return [
-      BlockShopList(),
       AdminDashboard(),
+      BlockShopList(),
       AddShop(),
     ];
   }
@@ -68,16 +68,16 @@ class _SuperAdminHomePageState extends State<SuperAdminHomePage> {
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
-        icon: Icon(Icons.block_flipped),
-        title: ("Blocked Shop"),
+        icon: Icon(CupertinoIcons.list_dash),
+        title: ("Dashboard"),
+        activeColorSecondary: Colors.white,
         textStyle: TextStyle(fontFamily: "MPLUSRounded"),
         activeColorPrimary: CupertinoColors.systemRed,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.list_dash),
-        title: ("Dashboard"),
-        activeColorSecondary: Colors.white,
+        icon: Icon(Icons.block_flipped),
+        title: ("Blocked Shop"),
         textStyle: TextStyle(fontFamily: "MPLUSRounded"),
         activeColorPrimary: CupertinoColors.systemRed,
         inactiveColorPrimary: CupertinoColors.systemGrey,
@@ -298,10 +298,12 @@ class _AddShopState extends State<AddShop> {
   TextEditingController _shopPasswordTextEditingController = TextEditingController();
   TextEditingController _shopAddressTextEditingController = TextEditingController();
   TextEditingController _shopShopContactNumberEditingController = TextEditingController();
+  TextEditingController _razorPayApiTextEditingController = TextEditingController();
 
 
   bool showShopNameErrorMessgae = false;
   bool showShopLoginErrorMessage = false;
+  bool showRazorPayApiErrorMessage = false;
   bool showShopPasswordErrorMessage = false;
   bool showShopAddressErrorMessage = false;
   bool showShopContactNumberErrorMessage = false;
@@ -311,6 +313,7 @@ class _AddShopState extends State<AddShop> {
   String shopUserPasswordErrorMessage = "Password Cannot Be Blank";
   String shopContactNumberErrorMessage = "Contact Cannot Be Blank";
   String ShopAddressErrorMessage = "Shop Address Cannot be blank";
+  String RazorPayApiErrorMessage = "Razor Pay Api Cannot be blank";
 
 
   @override
@@ -348,6 +351,44 @@ class _AddShopState extends State<AddShop> {
                     WidgetHelper().CustomTextField("Enter Shop Password",Icons.remove_red_eye,_shopPasswordTextEditingController,showShopPasswordErrorMessage,shopUserPasswordErrorMessage),
                     SizedBox(height: 20,),
                     WidgetHelper().CustomTextField("Enter Shop Contact Number",Icons.phone,_shopShopContactNumberEditingController,showShopContactNumberErrorMessage,shopContactNumberErrorMessage),
+                    SizedBox(height: 20,),
+                  TextField(
+                    controller: _razorPayApiTextEditingController,
+                    style: TextStyle(color: Colors.grey[100],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+                    decoration: InputDecoration(
+                      suffixIcon: Padding(padding: EdgeInsets.all(10),child:TextButton(
+                        child: Text("Register",style:TextStyle(color: Colors.grey[100],fontSize: 20,fontFamily: 'MPLUSRounded1c')),
+                        onPressed: (){
+                          html.window.open("https://razorpay.com/","Razor Pay API");
+                        },
+                      )),
+                        errorStyle: TextStyle(
+                          fontSize: 16.0,
+                        ),
+                        errorText: showRazorPayApiErrorMessage?RazorPayApiErrorMessage:null,
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(),
+                          borderRadius: BorderRadius.circular(100.0),
+                        ),
+                        enabledBorder:OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(100.0),
+                        ) ,
+                        filled: true,
+                        focusColor: Colors.white,
+                        focusedBorder:OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.white, width: 2.0),
+                          borderRadius: BorderRadius.circular(100.0),
+                        ),
+                        prefixIcon:Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Icon(Icons.security,size: 40,color: Colors.white,),
+                        ),
+                        hintStyle: TextStyle(color: Colors.grey[500],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+                        hintText: "Enter Shop Razor Pay Api Key",
+                        fillColor: Colors.black
+                    ),
+                  ),
                     SizedBox(height: 20,),
                     SizedBox(
                       height:350,
@@ -389,23 +430,30 @@ class _AddShopState extends State<AddShop> {
                         showShopPasswordErrorMessage = _shopPasswordTextEditingController.text.isEmpty;
                         showShopAddressErrorMessage =  _shopAddressTextEditingController.text.isEmpty;
                         showShopContactNumberErrorMessage =  _shopShopContactNumberEditingController.text.isEmpty;
+                        showRazorPayApiErrorMessage =  _razorPayApiTextEditingController.text.isEmpty;
+
                         setState(() {
 
                         });
+
                         if(((_shopNameTextEditingController.text.isNotEmpty&&_shopLoginEditingController.text.isNotEmpty)
-                        &&(_shopPasswordTextEditingController.text.isNotEmpty && _shopAddressTextEditingController.text.isNotEmpty ))&& (_shopShopContactNumberEditingController.text.isNotEmpty)
+                        &&(_shopPasswordTextEditingController.text.isNotEmpty && _shopAddressTextEditingController.text.isNotEmpty ))&& (_shopShopContactNumberEditingController.text.isNotEmpty && _razorPayApiTextEditingController.text.isNotEmpty)
                         ){
-                          String ADDSHOPMESSAGE  = await FirebaseRepo().AddNewShop(_shopNameTextEditingController.text.trim(),_shopLoginEditingController.text.trim(),_shopPasswordTextEditingController.text.trim(),_shopShopContactNumberEditingController.text.trim(),_shopAddressTextEditingController.text.trim());
+                          String ADDSHOPMESSAGE  = await FirebaseRepo().AddNewShop(_shopNameTextEditingController.text.trim(),_shopLoginEditingController.text.trim(),_shopPasswordTextEditingController.text.trim(),_shopShopContactNumberEditingController.text.trim(),_shopAddressTextEditingController.text.trim(),_razorPayApiTextEditingController.text.trim());
                           print(ADDSHOPMESSAGE);
                           Color messageColor = Colors.red;
+
                           if(ADDSHOPMESSAGE=="Congratulations! Shop Added Successfully!"){
                             messageColor = Colors.green;
                           }
+
                           _shopNameTextEditingController.text = "";
                           _shopLoginEditingController.text = "";
                           _shopPasswordTextEditingController.text = "";
                           _shopAddressTextEditingController.text = "";
                           _shopShopContactNumberEditingController.text  = "";
+                          _razorPayApiTextEditingController.text = "";
+
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: Colors.black,
                             content: Text(

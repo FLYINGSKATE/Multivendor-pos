@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:rdipos/ApiRepo/FirebaseRepo.dart';
 import 'package:rdipos/ApiRepo/payments.dart';
 import 'package:rdipos/POSOutletScreens/CheckOutScreen.dart';
 import 'package:rdipos/Utility/Bouncing.dart';
@@ -34,7 +35,13 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
 
   double totalValue = 0.0;
 
-  int tempQuantity = 0;
+  String tempQuantity = "0";
+
+  String totalPrice = "0";
+
+  String totalQuantity = "0";
+
+  String totalDiscount = "0";
 
   double tempPrice = 0;
 
@@ -47,17 +54,35 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
   late AnimationController controller;
   late Animation<Offset> offset;
 
+  String selectedProductName = "";
+
+  int selectedProductQuantity = 0;
+
+  int selectedProductPrice = 0;
+
+  TextEditingController _posBarcodeTextEditingController = TextEditingController();
+
+  late FocusNode _posBarcodeTextFieldFocusNode;
+
+  void _requestPosBarcodeTextFieldFocusNode() {
+    setState(() {
+      FocusScope.of(context).requestFocus(_posBarcodeTextFieldFocusNode);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     controller = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
 
+    _posBarcodeTextFieldFocusNode = FocusNode();
+
     //Adding Products to bill
     for(Map<String,dynamic> singleProduct in widget.bill){
       int priceTemp = int.parse(singleProduct["Product Price"]) * int.parse(singleProduct["ProductStock"]);
       tempPrice = tempPrice+priceTemp;
-      int stockTemp = int.parse(singleProduct["ProductStock"]);
-      tempQuantity = tempQuantity+stockTemp;
+      String stockTemp = singleProduct["ProductStock"];
+      //tempQuantity = tempQuantity+stockTemp;
     }
 
     offset = Tween<Offset>(begin: Offset.zero, end: Offset(0.0, 1.0)).animate(controller);
@@ -112,12 +137,37 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:WidgetHelper().RdiAppBar(),
+      appBar:WidgetHelper().RdiAppBar(context),
       body: OrientationBuilder(
         builder: (context, orientation) {
           if(orientation==Orientation.landscape){
             return Row(
               children: [
+                Expanded(
+                  child: TextField(
+                    autofocus: true,
+                    focusNode: _posBarcodeTextFieldFocusNode,
+                    onTap: _requestPosBarcodeTextFieldFocusNode,
+                    onChanged: (value) async {
+                      if(value.length>=13){
+                        //Remove Product From to Stock
+                        print(value);
+                        Map<String,dynamic>? productDetails = await FirebaseRepo().FetchProductFromBarcode(widget.shopName,value);
+                        if(productDetails==null){
+                          SnackBar(
+                            backgroundColor: Colors.black,
+                            content: Text(
+                              "Product Doesn't Exists - Contact Shop Owner",
+                              style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+                            ),
+                          );
+                          return;
+                        }
+                        await FirebaseRepo().RemoveStock(widget.shopName, productDetails["ProductName"],"1").then((value) =>AddProductToBill(productDetails));
+                      }
+                    },
+                  ),
+                ),
                 Expanded(
                   flex: 6,
                   child: TopPanel(),
@@ -131,6 +181,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
           else{
             return Column(
               children: [
+                TextField(),
                 Expanded(
                   flex: 6,
                   child: TopPanel(),
@@ -222,6 +273,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
       ),
     );
   }*/
+
   TopPanel() {
     return Container(
       color: Colors.white10,
@@ -287,45 +339,85 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
     );
   }
 
-
   Widget Product(String productName,int productPrice,int productStock){
-
-    return Row(
+    return GestureDetector(onTap:(){
+      ///When Product Selected Make all the temp calculated value to Zero
+      tempQuantity = "0";
+      tempPrice = 0;
+      tempDiscount = 0;
+      selectedProductName = productName;
+      selectedProductQuantity = productStock;
+      selectedProductPrice = productPrice;
+      print(productName);} ,child:Column(
       children: [
-        Expanded(
-          flex: 5,
-          child: Text('$productName', textAlign: TextAlign.left, style: TextStyle(
-              color: Color.fromRGBO(38, 50, 56, 1),
-              fontFamily: 'Inter',
-              fontSize: 24,
-              letterSpacing: 0.20000001788139343,
-              fontWeight: FontWeight.normal,
-              height: 1.400000028610228
-          ),),
+        Row(
+          children: [
+            Expanded(
+              flex: 5,
+              child: Text('$productName', textAlign: TextAlign.left, style: TextStyle(
+                  color: Color.fromRGBO(38, 50, 56, 1),
+                  fontFamily: 'Inter',
+                  fontSize: 24,
+                  letterSpacing: 0.20000001788139343,
+                  fontWeight: FontWeight.normal,
+                  height: 1.400000028610228
+              ),),
+            ),
+            Expanded(
+              flex: 2,
+              child: Text(productStock.toString(), textAlign: TextAlign.center, style: TextStyle(
+                  color: Color.fromRGBO(38, 50, 56, 1),
+                  fontFamily: 'Inter',
+                  fontSize: 16,
+                  letterSpacing: 0.20000001788139343,
+                  fontWeight: FontWeight.normal,
+                  height: 1.400000028610228
+              ),),
+            ),
+            Expanded(
+              flex: 2,
+              child: Text( productPrice.toString()+'₹', textAlign: TextAlign.center, style: TextStyle(
+                  color: Color.fromRGBO(38, 50, 56, 1),
+                  fontFamily: 'Inter',
+                  fontSize: 16,
+                  letterSpacing: 0.20000001788139343,
+                  fontWeight: FontWeight.normal,
+                  height: 1.400000028610228
+              ),),
+            ),
+          ],
         ),
-        Expanded(
-          flex: 2,
-          child: Text(productStock.toString(), textAlign: TextAlign.center, style: TextStyle(
-              color: Color.fromRGBO(38, 50, 56, 1),
-              fontFamily: 'Inter',
-              fontSize: 16,
-              letterSpacing: 0.20000001788139343,
-              fontWeight: FontWeight.normal,
-              height: 1.400000028610228
-          ),),
-        ),
-        Expanded(
-          flex: 2,
-          child: Text( productPrice.toString()+'₹', textAlign: TextAlign.center, style: TextStyle(
-              color: Color.fromRGBO(38, 50, 56, 1),
-              fontFamily: 'Inter',
-              fontSize: 16,
-              letterSpacing: 0.20000001788139343,
-              fontWeight: FontWeight.normal,
-              height: 1.400000028610228
-          ),),
-        ),
-      ],
+        //Messages to show are : -
+        //Added 10 more banana to bill
+        //Removed 10 banana from bill
+        //Added 10% Dicount to Banana
+        //Reduced 10% Discount from Banana
+        //No More Stock Available
+        Visibility(
+          visible: true,
+          child: RichText(
+            textAlign: TextAlign.left,
+            text: TextSpan(text: 'Added', style: TextStyle(color: Colors.blueAccent, fontSize: 18),
+                children: <TextSpan>[
+                TextSpan(text: '10 Stock more',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline)
+                ),
+                  TextSpan(text: 'to $selectedProductName',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline)
+                  )
+            ]),
+            ),
+          ),
+          ],
+    )
     );
   }
 
@@ -437,6 +529,10 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                         ),
                         child: FlatButton(
                           onPressed: () => {
+                            //int totalAmountToPay = 0;
+                            //for(int i = 0;i<widget.bill.length;i++){
+
+                            //}
                             if(kIsWeb){
                               Navigator.push(context, MaterialPageRoute(builder: (context) =>CheckoutScreen(shopName: widget.shopName, price: 2 ,)))
                             }
@@ -687,13 +783,12 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                 fontWeight: FontWeight.bold,
                 height: 1.400000028610228
             ),),),
-
-
           ),);
       case "+/-":
         return Bouncing(
           onPress: () {
             plusMode=!plusMode;
+            tempQuantity = "0";
             setState(() {
 
             });
@@ -729,7 +824,11 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
 
 
             }
+            if(s=="."){
+              print(widget.bill);
+            }
             else{
+              //If Pressed Any Number
               applyLogic(s);
             }
           },
@@ -756,30 +855,90 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
     }
   }
 
-  applyLogic(String s){
+  applyLogic(String s) async {
+    //Positive Operations
     if(!plusMode){
       if(quantityMode){
-        tempQuantity +=int.parse(s);
-        print(tempQuantity);
-        setState(() {
-        });
+        //Positively adding stocks.
+        int initialSelectedProductQuantity = selectedProductQuantity;
+        int t = selectedProductQuantity+int.parse(s);
+
+        //As it is a positive operation we will add stock quantity even if it is 0 product in bill
+        //First Check if there is any stock in database.
+        String stockUnitInDatabase = await FirebaseRepo().FetchStockUnit(widget.shopName, selectedProductName);
+        if(stockUnitInDatabase!="0" && int.parse(stockUnitInDatabase) > int.parse(s)){
+          bool isStockRemovedSuccessfully = await FirebaseRepo().RemoveStock(widget.shopName, selectedProductName, s.toString());
+          if(isStockRemovedSuccessfully){
+            ///Remove it from Bill map too here
+            AddStockUnitsToBill(int.parse(s));
+            setState(() {});
+            return;
+          }
+          else{
+            selectedProductQuantity = initialSelectedProductQuantity;
+          }
+        }
+
+        if(tempQuantity!="0" && int.parse(tempQuantity) > 0){
+          String remainingStock = await FirebaseRepo().FetchStockUnit(widget.shopName, selectedProductName);
+          if(remainingStock == "0"){
+            print("No stock remaining for $selectedProductName");
+            return;
+          }
+          bool isProductRemovedSuccessfully = await FirebaseRepo().RemoveStock(widget.shopName, selectedProductName, selectedProductQuantity.toString());
+          if(!isProductRemovedSuccessfully){
+            selectedProductQuantity -=int.parse(s);
+          }
+          if(isProductRemovedSuccessfully){
+            print("Executing Post Product Removal");
+            widget.bill.forEach((e){
+              if(e["ProductName"] == selectedProductName){
+                e["ProductStock"] = selectedProductQuantity.toString();
+                print("Now inside bill :"+selectedProductName+" ki quantity hai "+e["ProductStock"]+"Same"
+                    "Same naa ?"+selectedProductQuantity.toString());
+              }
+            });
+          }
+
+          //
+          setState(() {});
+          //And Check if the product quantity comes to zero show Product is out of stock
+        }
+        setState(() {});
       }
       else if(DiscMode){
-        tempDiscount+=int.parse(s);;
+        tempDiscount+=int.parse(s);
         print(tempDiscount);
         setState(() {
         });
       }
       else if(PriceMode){
-        tempPrice +=int.parse(s);;
-        print(tempPrice);
+        print("Price Badhane ke Pehle" + selectedProductPrice.toString());
+        selectedProductPrice +=int.parse(s);
+        //Write Price Logic Here
+        print("Price Badhane ke Baad" + selectedProductPrice.toString());
+        print(selectedProductPrice);
+        ///Now Update The Bill to
+        Update_Selected_Product_Price_In_Bill(selectedProductPrice);
         setState(() {
         });
       }
     }
+
+    ///Negative Operations
     else {
       if (quantityMode) {
-        tempQuantity -= int.parse(s);
+        if(selectedProductQuantity<=0){
+          ///Remove the product from bill
+          print("You Should Remove the product from bill");
+        }
+        else{
+          selectedProductQuantity = selectedProductQuantity - int.parse(s);
+          bool isStockRemovedSuccesfully = await FirebaseRepo().RemoveStock(widget.shopName, selectedProductName, tempQuantity);
+          if(!isStockRemovedSuccesfully){
+            selectedProductQuantity = selectedProductQuantity + int.parse(s);
+          }
+        }
         setState(() {});
       }
       else if (DiscMode) {
@@ -787,9 +946,55 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
         setState(() {});
       }
       else if (PriceMode) {
-        tempPrice -= int.parse(s);
+        //Write Negative Logic of Price Here.
+        print("Price Badhane ke Pehle" + selectedProductPrice.toString());
+        selectedProductPrice -=int.parse(s);
+        //Write Price Logic Here
+        print("Price Badhane ke Baad" + selectedProductPrice.toString());
+        print(selectedProductPrice);
+        ///Now Update The Bill to
+        Update_Selected_Product_Price_In_Bill(selectedProductPrice);
+        setState(() {
+        });
         setState(() {});
       }
     }
     }
+
+  void AddStockUnitsToBill(int s) {
+    for(int i = 0;i<widget.bill.length;i++){
+      if(widget.bill[i]["ProductName"]==selectedProductName){
+        print("ADDING "+s.toString() +"to BILL for "+widget.bill[i]["ProductName"]);
+        print(widget.bill[i]["ProductStock"].toString() + "Before Adding Stock");
+        int temp = int.parse(widget.bill[i]["ProductStock"])+s;
+        print("TOTAL = wdewew"+temp.toString());
+        widget.bill[i]["ProductStock"] = temp.toString();
+        print(widget.bill[i]["ProductStock"].toString() + "After Adding Stock");
+      }
+    }
+    setState(() {});
+  }
+
+
+  void Update_Selected_Product_Price_In_Bill(int s) {
+    for(int i = 0;i<widget.bill.length;i++){
+      if(widget.bill[i]["ProductName"]==selectedProductName){
+        print("Increasing "+s.toString() +"Price to BILL for "+widget.bill[i]["ProductName"]);
+        print(widget.bill[i]["Product Price"].toString() + "Before Updating Price");
+        String newPrice = (s*int.parse(widget.bill[i]['ProductStock'])).toString();
+        widget.bill[i]["Product Price"] = s.toString();
+        print(widget.bill[i]["Product Price"].toString() + "After Updating Price");
+      }
+    }
+    setState(() {});
+  }
+
+  AddProductToBill(Map<String,dynamic> productDetails) {
+    widget.bill.add(productDetails);
+    print(widget.bill.toString());
+    setState(() {});
+  }
+
+
+
 }

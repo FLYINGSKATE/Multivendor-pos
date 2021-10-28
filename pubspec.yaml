@@ -49,6 +49,7 @@ dependencies:
   path_provider: ^2.0.4
   syncfusion_flutter_sliders: ^19.2.62
   email_validator: ^2.0.1
+  web_scraper: ^0.1.4
 
 
 dev_dependencies:

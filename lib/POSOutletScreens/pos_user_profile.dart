@@ -15,7 +15,7 @@ class _POSUserProfileState extends State<POSUserProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: WidgetHelper().RdiAppBar(),
+      appBar: WidgetHelper().RdiAppBar(context),
       body:SingleChildScrollView(child:Column(
         children: [
           ClipPath(

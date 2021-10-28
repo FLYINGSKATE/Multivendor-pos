@@ -12,7 +12,7 @@ class _ShopPanelState extends State<ShopPanel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: WidgetHelper().RdiAppBar(),
+      appBar: WidgetHelper().RdiAppBar(context),
       body: Column(
         children: [
           Icon(Icons.perm_contact_cal,size: 60,),

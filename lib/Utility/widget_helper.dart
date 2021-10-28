@@ -1,10 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rdipos/MainHomePage.dart';
 import 'package:rdipos/Utility/BarCodeScreen.dart';
+
+import '../main.dart';
 
 class WidgetHelper{
 
-  RdiAppBar(){
+  RdiAppBar(BuildContext context){
+    return AppBar(
+      title:FlatButton.icon(onPressed: (){
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Go To HomePage'),
+                content:Text('Want to Logout?'),
+                actions: <Widget>[
+                  new FlatButton(
+                    child: new Text('Logout'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MainHomePage()),
+                      );
+                    },
+                  ),
+                  new FlatButton(
+                    child: new Text('No'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            });
+      }, icon: Image.asset('assets/images/rdilogo.png'), label: Text(""),),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(
+            Icons.qr_code_scanner,
+            color: Colors.green,
+          ),
+          onPressed: () {
+            // do something
+          },
+        )
+      ],
+    );
+  }
+
+  RdiAppBarWithNoContext(){
     return AppBar(
       title: Image.asset('assets/images/rdilogo.png'),
       actions: <Widget>[

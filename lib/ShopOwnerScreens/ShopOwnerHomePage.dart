@@ -32,7 +32,7 @@ class _ShopOwnerHomePageState extends State<ShopOwnerHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: WidgetHelper().RdiAppBar(),
+      appBar: WidgetHelper().RdiAppBar(context),
       body: PersistentTabView(
         context,
         controller: _controller,

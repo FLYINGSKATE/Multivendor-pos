@@ -60,10 +60,10 @@ class FirebaseRepo {
         {
           "ProductStock" : amountOFSKU,
         }).whenComplete((){
-          print("Congratulations! Stock Removed Added Successfully!");
+          print("Congratulations! Stock Removed Successfully!");
           return true;}).onError((error, stackTrace){ print("Oops ! Something Went Wrong!"); return false;});
       //final QuerySnapshot result = await await FirebaseFirestore.instance.collection('/ShopList').get();
-      print("Congratulations! Stock Removed Added Successfully!");
+      print("Congratulations! Stock Removed Successfully!");
       return true;
   }
 
@@ -240,7 +240,7 @@ class FirebaseRepo {
     return documents;
   }
 
-  Future<String> AddNewShop(String shopName,String shopLoginName,String shopPassword,String shopContactNumber,String shopAddress) async {
+  Future<String> AddNewShop(String shopName,String shopLoginName,String shopPassword,String shopContactNumber,String shopAddress,String razorPayApiKey) async {
     print("Adding New Shop ");
     bool shopAlreadyExists = await ShopAlreadyExsists(shopName);
     print("Shop Already Exists"+shopAlreadyExists.toString());
@@ -256,7 +256,8 @@ class FirebaseRepo {
             "ShopPassword" : shopPassword,
             "ShopContactNumber" : shopContactNumber,
             "ShopAddress" : shopAddress,
-            "ShopStatus"  : "Running"
+            "ShopStatus"  : "Running",
+            "RazorPayApiKey":razorPayApiKey
           }).then((value){
         print("Hola");
         return "Congratulations! Shop Added Successfully!";
@@ -306,7 +307,51 @@ class FirebaseRepo {
 
   Future<String> fetchShopAPIKey(String ShopName) async {
     await Future.delayed(const Duration(seconds: 1), (){});
-    return "rzp_test_dojmbldJSpz91g";
+    return "rzp_live_yNdsns18m4KPTV";
   }
+
+  Future<bool> isShopRunning(String ShopName) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('/ShopList').where("ShopUserName", isEqualTo: "$ShopName").where("ShopStatus", isEqualTo: "Running").get();
+    if(querySnapshot.docs.length==0){
+      print("$ShopName Shop is Blocked");
+      return false;
+    }else{
+      print("$ShopName Shop is Running");
+      return true;
+    }
+  }
+
+
+  Future<Map<String,dynamic>?> FetchProductFromBarcode(String shopName,String productBarCode) async{
+    print("FetchProductFromBarcode");
+    //Better fetch all products and find your barcode here
+
+    Map<String, dynamic> productDetails;
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance.collection("/ShopList").doc(shopName).collection("ProductList").get();
+
+    //Sample Barcode in database....xIgMg3GV40WeCq4o31aE
+
+    for(int i = 0;i<querySnapshot.size;i++){
+      if(querySnapshot.docs.elementAt(i).data()["ProductBarCode"] == productBarCode){
+        print(querySnapshot.docs.elementAt(i).data());
+        //If Product is Out Of Stock.
+        if(querySnapshot.docs.elementAt(i).data()["ProductStock"]=="0"){
+          return null;
+        }
+        //If there is in stock.
+        productDetails  =  querySnapshot.docs.elementAt(i).data();
+        productDetails["ProductStock"] = "1";
+        print("Product Exists");
+        return productDetails;
+      }
+    }
+  }
+
+  Future<String?> FetchProductDetails(String shopName,String ProductName) async{
+    return "";
+  }
+
+
+
   ////await Firestore.instance.collection('Stores').document(widget.currentUserUID).collection("Stores").getDocuments();
 }

@@ -2,6 +2,7 @@ import 'dart:html';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rdipos/ApiRepo/FirebaseRepo.dart';
+import 'package:rdipos/POSOutletScreens/pos_home_page.dart';
 import 'UiFake.dart' if (dart.library.html) 'dart:ui' as ui;
 
 class Webpayment extends StatelessWidget{
@@ -11,7 +12,7 @@ class Webpayment extends StatelessWidget{
   final String? mobile;
   final String? email;
 
-  final String? shopName;
+  final String shopName;
 
   final String? shopApiKey;
 
@@ -31,6 +32,13 @@ class Webpayment extends StatelessWidget{
         }
         else if(element.data=='SUCCESS'){
           print('PAYMENT SUCCESSFULL!!!!!!!');
+          //Do here Success Thing
+          //Return to POS Home Page
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (BuildContext context) => POSHomePage(bill: [], shopName: this.shopName,)));
+        }
+        else{
+          print("AAPKE RAYZOR PAY KE SAATH YEH HUA : "+element.data);
         }
         //FirebaseFirestore.instance.collection('Products').doc('iphone12').update({
         //  'payment':"Done"

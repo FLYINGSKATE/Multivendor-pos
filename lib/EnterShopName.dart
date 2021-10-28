@@ -17,12 +17,20 @@ class _EnterShopNameState extends State<EnterShopName> {
   String shopNameErrorMessage = "Shop Does Not Exist!";
   bool showShopNameErrorMessage = false;
   bool doesShopExists = false;
+  bool showAdminContact = false;
   TextEditingController _shopNameTextEditingController = TextEditingController();
+
+  bool isShopRunning = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: WidgetHelper().RdiAppBar(),
+      floatingActionButton: showAdminContact?FloatingActionButton(
+        backgroundColor: showAdminContact?Colors.black:Colors.transparent,
+        child: Icon(Icons.call,color: showAdminContact?Colors.white:Colors.transparent,),
+        onPressed: () {},
+      ):null,
+      appBar: WidgetHelper().RdiAppBarWithNoContext(),
       body: Center(child:Container(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -58,16 +66,27 @@ class _EnterShopNameState extends State<EnterShopName> {
                           print(shopName+" does exists "+doesShopExists.toString());
                           if(!doesShopExists){
                             showShopNameErrorMessage = true;
+                            showAdminContact = true;
                             setState((){});
                           }
                           else{
-                            showShopNameErrorMessage = false;
-                            setState((){});
-                            ///Navigate to Shop & Pos Login Tabs with the current Shop Name;
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => HomePage(shopName: shopName,)),
-                            );
+                            isShopRunning = await FirebaseRepo().isShopRunning(shopName);
+                            if(isShopRunning){
+                              showShopNameErrorMessage = false;
+                              setState((){});
+                              ///Navigate to Shop & Pos Login Tabs with the current Shop Name;
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => HomePage(shopName: shopName,)),
+                              );
+                            }
+                            else{
+                              shopNameErrorMessage = "$shopName is Blocked . Please Contact Admin";
+                              showShopNameErrorMessage = true;
+                              showAdminContact = true;
+                              setState((){});
+                              return;
+                            }
                           }
                         },
                         child: Text('Login to Your Shop',maxLines: 1,style: TextStyle(

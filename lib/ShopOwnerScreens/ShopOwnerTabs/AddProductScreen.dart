@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rdipos/ApiRepo/FirebaseRepo.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
+import 'package:web_scraper/web_scraper.dart';
 
 class AddProductScreen extends StatefulWidget {
   final String shopName;
@@ -23,6 +24,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   final databaseRef = FirebaseDatabase.instance.reference();
 
+  TextEditingController _productBarCodeTextEditingController = TextEditingController();
   TextEditingController _productNameTextEditingController = TextEditingController();
   TextEditingController _productPriceTextEditingController = TextEditingController();
   TextEditingController _productStockTextEditingController = TextEditingController();
@@ -32,14 +34,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
   bool _showProductPriceErrorMessage = false;
   bool _showProductStockErrorMessage = false;
   bool _showProductSellerContactNumberErrorMessage = false;
+  bool _showProductBarCodeErrorMessage = false;
 
   String _productNameErrorMessage = "Product Name Name Cannot Be Blank";
   String _productPriceErrorMessage = "Price Value Cannot Be Blank";
   String _productStockErrorMessage = "Stock Value Cannot Be Blank";
   String productSellerContactNumberErrorMessage = "Seller Contact Cannot Be Blank";
+  String _barCodeErrorMessage = "No Such Product Exists";
+
   String tempBarcode = "";
 
   bool enableDownloadBarcodeButton = false;
+
+  String productNameFromApi = "";
 
   final GlobalKey globalKey = GlobalKey();
 
@@ -63,8 +70,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ),),
             Row(
               children: [
-                Expanded(flex: 1, child: ProductBarCodeGenerateSection()),
-                SizedBox(width: 10,),
                 Expanded(flex: 1, child: Container(
                   decoration: BoxDecoration(
                       color: Colors.black,
@@ -77,11 +82,83 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(height: 20,),
-                        WidgetHelper().CustomTextField("Enter Product Name",
-                            Icons.perm_contact_cal_sharp,
-                            _productNameTextEditingController,
-                            _showProductNameErrorMessgae,
-                            _productNameErrorMessage),
+                        TextField(
+                          controller: _productBarCodeTextEditingController,
+                          onChanged: (value) async {
+                            if(value.length>=10){
+                              final webScraper = WebScraper('https://www.barcodespider.com');
+                              if (await webScraper.loadWebPage('/$value')) {
+                                List<Map<String, dynamic>> elements = webScraper.getElement('div.detailtitle > h2', ['title']);
+                                print(elements);
+                                productNameFromApi = elements[0]['title'];
+                                _productNameTextEditingController.text = productNameFromApi;
+                                print(elements[0]['title']);
+                                setState(() {
+
+                                });
+                              }
+                            }
+                          },
+                          style: TextStyle(color: Colors.grey[100],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+                          decoration: InputDecoration(
+                              errorStyle: TextStyle(
+                                fontSize: 16.0,
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
+                              enabledBorder:OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ) ,
+                              filled: true,
+                              focusColor: Colors.white,
+                              focusedBorder:OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.white, width: 2.0),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
+                              prefixIcon:Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Icon(Icons.scanner,size: 40,color: Colors.white,),
+                              ),
+                              hintStyle: TextStyle(color: Colors.grey[500],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+                              hintText: "Use Your Scanner",
+                              fillColor: Colors.black
+                          ),
+                        ),
+                        SizedBox(height: 20,),
+                        TextField(
+                          controller: _productNameTextEditingController,
+                          style: TextStyle(color: Colors.grey[100],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+                          decoration: InputDecoration(
+                              errorStyle: TextStyle(
+                                fontSize: 16.0,
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
+                              enabledBorder:OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ) ,
+                              filled: true,
+                              errorText: _showProductNameErrorMessgae?_productNameErrorMessage:null,
+                              focusColor: Colors.white,
+                              focusedBorder:OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.white, width: 2.0),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
+                              prefixIcon:Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Icon(Icons.perm_contact_cal_sharp,size: 40,color: Colors.white,),
+                              ),
+                              hintStyle: TextStyle(color: Colors.grey[500],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+                              hintText: "Enter Product Name",
+                              fillColor: Colors.black
+                          ),
+                        ),
                         SizedBox(height: 20,),
                         Row(
                           children: [
