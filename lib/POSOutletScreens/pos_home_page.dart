@@ -100,39 +100,6 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
     _razorpay.clear();
   }
 
-  void openCheckout() async {
-    var options = {
-      'key': 'rzp_test_1DP5mmOlF5G5ag',
-      'amount': 2000,
-      'name': 'Acme Corp.',
-      'description': 'Fine T-Shirt',
-      'prefill': {'contact': '8888888888', 'email': 'test@razorpay.com'},
-      'external': {
-        'wallets': ['paytm']
-      }
-    };
-    try {
-      _razorpay.open(options);
-    } catch (e) {
-      debugPrint('Error: e');
-    }
-  }
-
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    Fluttertoast.showToast(
-        msg: "SUCCESS: " + response.paymentId!, toastLength: Toast.LENGTH_SHORT);
-  }
-
-  void _handlePaymentError(PaymentFailureResponse response) {
-    Fluttertoast.showToast(
-        msg: "ERROR: " + response.code.toString() + " - " + response.message!,
-        toastLength: Toast.LENGTH_SHORT);
-  }
-
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    Fluttertoast.showToast(
-        msg: "EXTERNAL_WALLET: " + response.walletName!, toastLength: Toast.LENGTH_SHORT);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -209,6 +176,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
     );
   }
 
+  //UIs
   ProductLeftPanel() {
     return Container(
         width: MediaQuery.of(context).size.width/2,
@@ -221,19 +189,6 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
           ),
         )
     );
-  }
-
-
-  void addToTotal(int i) {
-    if(i==0){
-      //That means we got a Zero
-      totalValue *= 10;
-      print(totalValue);
-    }
-    else{
-      totalValue += i;
-      print(totalValue);
-    }
   }
 
   HomeButton(){
@@ -862,11 +817,14 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                 height: 1.400000028610228
             ),),),
 
-
           ),);
     }
   }
+  //endregion
 
+
+
+  //LOGICS
   applyLogic(String s) async {
     //Positive Operations
     if(!plusMode){
@@ -987,6 +945,17 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
     setState(() {});
   }
 
+  void addToTotal(int i) {
+    if(i==0){
+      //That means we got a Zero
+      totalValue *= 10;
+      print(totalValue);
+    }
+    else{
+      totalValue += i;
+      print(totalValue);
+    }
+  }
 
   void Update_Selected_Product_Price_In_Bill(int s) {
     for(int i = 0;i<widget.bill.length;i++){
@@ -1006,7 +975,43 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
     print(widget.bill.toString());
     setState(() {});
   }
+  //endregion
 
 
+  //RAYZOR PAY MOBILE METHODS
+  void openCheckout() async {
+    var options = {
+      'key': 'rzp_test_1DP5mmOlF5G5ag',
+      'amount': 2000,
+      'name': 'Acme Corp.',
+      'description': 'Fine T-Shirt',
+      'prefill': {'contact': '8888888888', 'email': 'test@razorpay.com'},
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint('Error: e');
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Fluttertoast.showToast(
+        msg: "SUCCESS: " + response.paymentId!, toastLength: Toast.LENGTH_SHORT);
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(
+        msg: "ERROR: " + response.code.toString() + " - " + response.message!,
+        toastLength: Toast.LENGTH_SHORT);
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Fluttertoast.showToast(
+        msg: "EXTERNAL_WALLET: " + response.walletName!, toastLength: Toast.LENGTH_SHORT);
+  }
+  //endregion
 
 }
