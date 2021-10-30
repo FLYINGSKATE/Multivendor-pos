@@ -15,7 +15,6 @@ import 'package:rdipos/AddFromInventory.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
 import 'package:spring/spring.dart';
 
-
 class POSHomePage extends StatefulWidget {
   final String shopName;
   final List<Map<String,dynamic>> bill;

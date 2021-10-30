@@ -182,8 +182,23 @@ class _AddFromInventoryPanelState extends State<AddFromInventoryPanel> {
   }
 
   void AddThisProductToBill(Map<String,dynamic> product) {
+    //Traverse the Products and
+    print("OH BHAI YEH HAI PRODUCT LIST :"+product.toString());
+    for(int i = 0;i<widget.bill.length;i++){
+      if(widget.bill[i]["ProductName"]==product["ProductName"]){
+        print(product["ProductName"]+"Product Already Exists in the Bill");
+        print(widget.bill[i]["ProductStock"].toString() + "Before Adding Stock");
+        widget.bill[i]["ProductStock"] = (int.parse(widget.bill[i]["ProductStock"])+int.parse(product["ProductStock"])).toString();
+        print(widget.bill[i]["ProductStock"].toString() + "After Adding Stock");
+        bill = widget.bill;
+        return;
+      }
+    }
+    print(product["ProductName"]+"Product Doesn't Exsists in the Bill");
     bill = widget.bill;
     bill.add(product);
+    return;
+    //Traverse Full Bill Check if Product Exists then Add Stock instead of doing so.
   }
 
 }
