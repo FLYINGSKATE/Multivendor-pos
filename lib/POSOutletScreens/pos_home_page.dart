@@ -159,7 +159,29 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
           else{
             return Column(
               children: [
-                TextField(),
+                Expanded(flex: 1,child:TextField(
+                  autofocus: true,
+                  focusNode: _posBarcodeTextFieldFocusNode,
+                  onTap: _requestPosBarcodeTextFieldFocusNode,
+                  onChanged: (value) async {
+                    if(value.length>=10){
+                      //Remove Product From to Stock
+                      print(value);
+                      Map<String,dynamic>? productDetails = await FirebaseRepo().FetchProductFromBarcode(widget.shopName,value);
+                      if(productDetails==null){
+                        SnackBar(
+                          backgroundColor: Colors.black,
+                          content: Text(
+                            "Product Doesn't Exists - Contact Shop Owner",
+                            style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+                          ),
+                        );
+                        return;
+                      }
+                      await FirebaseRepo().RemoveStock(widget.shopName, productDetails["ProductName"],"1").then((value) =>AddProductToBill(productDetails));
+                    }
+                  },
+                )),
                 Expanded(
                   flex: 6,
                   child: TopPanel(),
@@ -970,6 +992,23 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
   }
 
   AddProductToBill(Map<String,dynamic> productDetails) {
+
+
+
+
+    //Check if the product already exists then add one stock to it.
+    print("Checking If Product Name Exists in Bill :"+productDetails["ProductName"]);
+    for(int i = 0;i<widget.bill.length;i++){
+      if(widget.bill[i]["ProductName"]==productDetails["ProductName"]){
+        print(productDetails["ProductName"]+"Product Name Already Exists in the Bill");
+        print(widget.bill[i]["ProductStock"].toString() + "Before Adding Stock");
+        widget.bill[i]["ProductStock"] = (int.parse(widget.bill[i]["ProductStock"])+int.parse(productDetails["ProductStock"])).toString();
+        print(widget.bill[i]["ProductStock"].toString() + "After Adding Stock");
+        setState(() {});
+        return;
+      }
+    }
+    print(productDetails["ProductName"]+"Product Doesn't Exsists in the Bill");
     widget.bill.add(productDetails);
     print(widget.bill.toString());
     setState(() {});
