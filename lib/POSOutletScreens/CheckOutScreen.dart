@@ -64,6 +64,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           if(customerPhoneNumberTextEditingController.text.trim().length>=10){
                             ///Navigate to Rayzor Pay & On Payment Success Navigate to Billing Section
                             String apiKey = await FirebaseRepo().fetchShopAPIKey(widget.shopName);
+                            print("Price You have to pay : "+widget.price.toString());
                             Navigator.push(context, MaterialPageRoute(builder: (context) => Webpayment(mobile:customerPhoneNumberTextEditingController.text.trim(),email: customerEmailIdTextEditingController.text.trim(),price: widget.price*100, name: 'AshrafK.Salim', shopName:widget.shopName, shopApiKey: apiKey ,)),);
                           }
                           else{

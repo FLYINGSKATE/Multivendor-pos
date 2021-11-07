@@ -15,6 +15,9 @@ import 'package:rdipos/AddFromInventory.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
 import 'package:spring/spring.dart';
 
+import '../MainHomePage.dart';
+import 'dart:html' as html;
+
 class POSHomePage extends StatefulWidget {
   final String shopName;
   final List<Map<String,dynamic>> bill;
@@ -46,6 +49,8 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
 
   double tempDiscount = 0;
 
+  double totalPriceToPay = 0;
+
   static const platform = const MethodChannel("razorpay_flutter");
 
   late Razorpay _razorpay;
@@ -62,6 +67,8 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
   TextEditingController _posBarcodeTextEditingController = TextEditingController();
 
   late FocusNode _posBarcodeTextFieldFocusNode;
+
+
 
   void _requestPosBarcodeTextFieldFocusNode() {
     setState(() {
@@ -97,13 +104,88 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
   void dispose() {
     super.dispose();
     _razorpay.clear();
+    print("Aapki HTML Window Band Hone Wali Hai");
+    html.window.onBeforeUnload.listen((event) async{
+      print("Aapki HTML Window Band Hone Wali Hai");
+    });
   }
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:WidgetHelper().RdiAppBar(context),
+      appBar:AppBar(
+        leading: IconButton(
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text('Go To HomePage'),
+                    content:Text('Want to Logout?'),
+                    actions: <Widget>[
+                      new FlatButton(
+                        child: new Text('Logout'),
+                        onPressed: () async {
+                          await OnOrderCancel();
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => MainHomePage()),
+                          );
+                        },
+                      ),
+                      new FlatButton(
+                        child: new Text('No'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+                  );
+                });
+          },
+          icon: Icon(Icons.home_outlined),
+        ),
+        title:FlatButton.icon(onPressed: (){
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text('Go To HomePage'),
+                  content:Text('Want to Logout?'),
+                  actions: <Widget>[
+                    new FlatButton(
+                      child: new Text('Logout'),
+                      onPressed: () async {
+                        await OnOrderCancel();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => MainHomePage()),
+                        );
+                      },
+                    ),
+                    new FlatButton(
+                      child: new Text('No'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                );
+              });
+        }, icon: Image.asset('assets/images/rdilogo.png'), label: Text(""),),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.qr_code_scanner,
+              color: Colors.green,
+            ),
+            onPressed: () {
+              // do something
+            },
+          )
+        ],
+      ),
       body: OrientationBuilder(
         builder: (context, orientation) {
           if(orientation==Orientation.landscape){
@@ -410,6 +492,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
   }
 
   Widget TotalFooter(){
+    totalPriceToPay = tempPrice;
     return Row(
       children: [
         Expanded(
@@ -522,7 +605,8 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
 
                             //}
                             if(kIsWeb){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) =>CheckoutScreen(shopName: widget.shopName, price: 2 ,)))
+                              print("You have to pay :"+(totalPriceToPay*100).toString()),
+                              Navigator.push(context, MaterialPageRoute(builder: (context) =>CheckoutScreen(shopName: widget.shopName, price: totalPriceToPay.toInt(),)))
                             }
                             else{
                               openCheckout()
@@ -593,10 +677,8 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                         color: Colors.black,
                         child: MaterialButton(
                           onPressed: () {
-
                             controller.reverse();
-                            setState(() {
-                            });
+                            setState(() {});
                           },
                           color: Colors.black,
                           padding: EdgeInsets.all(10.0),
@@ -1051,5 +1133,23 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
         msg: "EXTERNAL_WALLET: " + response.walletName!, toastLength: Toast.LENGTH_SHORT);
   }
   //endregion
+
+
+  //ON ORDER CANCEL
+  Future<void> OnOrderCancel() async {
+    print("Bill Before Removing Products");
+    print(widget.bill.toString());
+    //Add all the items to database & on done remove all the items from bill
+    for(int i = 0;i<widget.bill.length;i++){
+      String responseString = await FirebaseRepo().AddStock(widget.shopName, widget.bill[i]["ProductName"], widget.bill[i]["ProductStock"]);
+      if(responseString=="Congratulations! Stock Added Successfully!"){
+        widget.bill[i].clear();
+      }
+    }
+    print("Bill After Removing Products");
+    print(widget.bill.toString());
+  }
+
+
 
 }
