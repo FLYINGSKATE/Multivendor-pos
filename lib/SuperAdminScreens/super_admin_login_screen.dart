@@ -52,9 +52,9 @@ class _SuperAdminLoginPageState extends State<SuperAdminLoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(height: 20,),
-                    WidgetHelper().CustomTextField("Username",Icons.perm_contact_cal_sharp,_userNameTextEditingController,showUsernameErrorMessgae,userErrorMessage),
+                    WidgetHelper().CustomTextField("Username",Icons.perm_contact_cal_sharp,_userNameTextEditingController,showUsernameErrorMessgae,userErrorMessage,context),
                     SizedBox(height: 20,),
-                    WidgetHelper().CustomTextField("Password",Icons.remove_red_eye,_passwordTextEditingController,showPasswordErrorMessage,passwordErrorMessage),
+                    WidgetHelper().CustomTextField("Password",Icons.remove_red_eye,_passwordTextEditingController,showPasswordErrorMessage,passwordErrorMessage,context),
                     SizedBox(height: 20,),
                     ElevatedButton(
                       onPressed: () {

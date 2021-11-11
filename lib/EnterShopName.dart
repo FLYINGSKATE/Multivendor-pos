@@ -57,7 +57,7 @@ class _EnterShopNameState extends State<EnterShopName> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(height: 20,),
-                      WidgetHelper().CustomTextField("Enter Your Shop Name",Icons.perm_contact_cal_sharp,_shopNameTextEditingController,showShopNameErrorMessage,shopNameErrorMessage),
+                      WidgetHelper().CustomTextField("Enter Your Shop Name",Icons.perm_contact_cal_sharp,_shopNameTextEditingController,showShopNameErrorMessage,shopNameErrorMessage,context),
                       SizedBox(height: 20,),
                       ElevatedButton(
                         onPressed: ()  async {

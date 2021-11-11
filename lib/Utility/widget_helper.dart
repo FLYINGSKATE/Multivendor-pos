@@ -78,13 +78,13 @@ class WidgetHelper{
     );
   }
 
-  CustomTextField(String hintText,IconData icon,TextEditingController controller,bool showErrorMessage,String errorMessage) {
+  CustomTextField(String hintText,IconData icon,TextEditingController controller,bool showErrorMessage,String errorMessage,BuildContext context) {
     return TextField(
       controller: controller,
       style: TextStyle(color: Colors.grey[100],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
       decoration: InputDecoration(
           errorStyle: TextStyle(
-            fontSize: 16.0,
+            fontSize: MediaQuery.of(context).size.width*0.03,
           ),
           errorText: showErrorMessage?errorMessage:null,
           border: OutlineInputBorder(
@@ -112,15 +112,15 @@ class WidgetHelper{
     );
   }
 
-  CustomNumberTextField(String hintText,IconData icon,TextEditingController controller,bool showErrorMessage,String errorMessage) {
+  CustomNumberTextField(String hintText,IconData icon,TextEditingController controller,bool showErrorMessage,String errorMessage,BuildContext context) {
     return TextField(
       inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
       controller: controller,
       keyboardType: TextInputType.number,
-      style: TextStyle(color: Colors.grey[100],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+      style: TextStyle(color: Colors.grey[100],fontSize: MediaQuery.of(context).size.width*0.03,fontFamily: 'MPLUSRounded1c'),
       decoration: InputDecoration(
           errorStyle: TextStyle(
-            fontSize: 16.0,
+            fontSize: MediaQuery.of(context).size.width*0.02,
           ),
           errorText: showErrorMessage?errorMessage:null,
           border: OutlineInputBorder(
@@ -141,14 +141,14 @@ class WidgetHelper{
             padding: const EdgeInsets.all(20.0),
             child: Icon(icon,size: 40,color: Colors.white,),
           ),
-          hintStyle: TextStyle(color: Colors.grey[500],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+          hintStyle: TextStyle(color: Colors.grey[500],fontSize: MediaQuery.of(context).size.width*0.02,fontFamily: 'MPLUSRounded1c'),
           hintText: hintText,
           fillColor: Colors.black
       ),
     );
   }
 
-  CustomPhoneNumberTextField(String hintText,IconData icon,TextEditingController controller,bool showErrorMessage,String errorMessage) {
+  CustomPhoneNumberTextField(String hintText,IconData icon,TextEditingController controller,bool showErrorMessage,String errorMessage,BuildContext context) {
     return TextField(
       inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$')),],
       controller: controller,
@@ -157,7 +157,7 @@ class WidgetHelper{
       style: TextStyle(color: Colors.grey[100],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
       decoration: InputDecoration(
           errorStyle: TextStyle(
-            fontSize: 16.0,
+            fontSize: MediaQuery.of(context).size.width*0.02,
           ),
           errorText: showErrorMessage?errorMessage:null,
           border: OutlineInputBorder(
@@ -178,7 +178,7 @@ class WidgetHelper{
             padding: const EdgeInsets.all(20.0),
             child: Icon(icon,size: 40,color: Colors.white,),
           ),
-          hintStyle: TextStyle(color: Colors.grey[500],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
+          hintStyle: TextStyle(color: Colors.grey[500],fontSize: MediaQuery.of(context).size.width*0.02,fontFamily: 'MPLUSRounded1c'),
           hintText: hintText,
           fillColor: Colors.black
       ),

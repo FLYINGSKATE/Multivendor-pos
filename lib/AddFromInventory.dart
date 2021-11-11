@@ -151,17 +151,17 @@ class _AddFromInventoryPanelState extends State<AddFromInventoryPanel> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(doc["ProductName"], textAlign: TextAlign.center, style: TextStyle(
+                  Expanded(child:Text(doc["ProductName"], textAlign: TextAlign.start, style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'Intern',
-                      fontSize: 40,
+                      fontSize: MediaQuery.of(context).size.width*0.04,
                       letterSpacing: 0.20000001788139343,
                       height: 1.400000028610228
-                  ),),
+                  ),)),
                   Text(doc["Product Price"]+"₹", textAlign: TextAlign.center, style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'Intern',
-                      fontSize: 40,
+                      fontSize: MediaQuery.of(context).size.width*0.04,
                       letterSpacing: 0.20000001788139343,
                       height: 1.400000028610228
                   ),),
@@ -170,7 +170,7 @@ class _AddFromInventoryPanelState extends State<AddFromInventoryPanel> {
               Text((int.parse(doc["ProductStock"])>0)?"In Stock : "+doc["ProductStock"]:"Out Of Stock", textAlign: TextAlign.center, style: TextStyle(
                   color: (int.parse(doc["ProductStock"])>0)?Colors.white:Colors.red,
                   fontFamily: 'Intern',
-                  fontSize: 20,
+                  fontSize: MediaQuery.of(context).size.width*0.025,
                   letterSpacing: 0.20000001788139343,
                   height: 1.400000028610228
               ),),

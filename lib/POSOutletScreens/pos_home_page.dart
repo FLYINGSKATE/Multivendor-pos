@@ -198,6 +198,14 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                     children: [
                       Expanded(child:TextField(
                         autofocus: true,
+                        style: TextStyle(
+                            color: Color.fromRGBO(38, 50, 56, 1),
+                            fontFamily: 'Intern',
+                            fontSize: MediaQuery.of(context).size.width*0.03,
+                            letterSpacing: 0.20000001788139343,
+                            fontWeight: FontWeight.bold,
+                            height: 1.400000028610228
+                        ),
                         focusNode: _posBarcodeTextFieldFocusNode,
                         onTap: _requestPosBarcodeTextFieldFocusNode,
                         onChanged: (value) async {
@@ -377,7 +385,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
           child: Text('Products', textAlign: TextAlign.left, style: TextStyle(
               color: Color.fromRGBO(38, 50, 56, 1),
               fontFamily: 'Inter',
-              fontSize: 28,
+              fontSize: MediaQuery.of(context).size.width*0.03,
               letterSpacing: 0.20000001788139343,
               fontWeight: FontWeight.bold,
               height: 1.400000028610228
@@ -388,7 +396,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
           child: Text('Quantity', textAlign: TextAlign.center, style: TextStyle(
               color: Color.fromRGBO(38, 50, 56, 1),
               fontFamily: 'Intern',
-              fontSize: 20,
+              fontSize: MediaQuery.of(context).size.width*0.03,
               letterSpacing: 0.20000001788139343,
               fontWeight: FontWeight.bold,
               height: 1.400000028610228
@@ -399,7 +407,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
           child: Text('Price', textAlign: TextAlign.center, style: TextStyle(
               color: Color.fromRGBO(38, 50, 56, 1),
               fontFamily: 'Inter',
-              fontSize: 20,
+              fontSize: MediaQuery.of(context).size.width*0.03,
               letterSpacing: 0.20000001788139343,
               fontWeight: FontWeight.bold,
               height: 1.400000028610228
@@ -427,7 +435,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
               child: Text('$productName', textAlign: TextAlign.left, style: TextStyle(
                   color: Color.fromRGBO(38, 50, 56, 1),
                   fontFamily: 'Inter',
-                  fontSize: 24,
+                  fontSize: MediaQuery.of(context).size.width*0.03,
                   letterSpacing: 0.20000001788139343,
                   fontWeight: FontWeight.normal,
                   height: 1.400000028610228
@@ -438,7 +446,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
               child: Text(productStock.toString(), textAlign: TextAlign.center, style: TextStyle(
                   color: Color.fromRGBO(38, 50, 56, 1),
                   fontFamily: 'Inter',
-                  fontSize: 16,
+                  fontSize: MediaQuery.of(context).size.width*0.03,
                   letterSpacing: 0.20000001788139343,
                   fontWeight: FontWeight.normal,
                   height: 1.400000028610228
@@ -449,7 +457,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
               child: Text( productPrice.toString()+'₹', textAlign: TextAlign.center, style: TextStyle(
                   color: Color.fromRGBO(38, 50, 56, 1),
                   fontFamily: 'Inter',
-                  fontSize: 16,
+                  fontSize: MediaQuery.of(context).size.width*0.03,
                   letterSpacing: 0.20000001788139343,
                   fontWeight: FontWeight.normal,
                   height: 1.400000028610228
@@ -464,7 +472,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
         //Reduced 10% Discount from Banana
         //No More Stock Available
         Visibility(
-          visible: true,
+          visible: false,
           child: RichText(
             textAlign: TextAlign.left,
             text: TextSpan(text: 'Added', style: TextStyle(color: Colors.blueAccent, fontSize: 18),
@@ -500,7 +508,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
           child: Text('Total', textAlign: TextAlign.left, style: TextStyle(
               color: Color.fromRGBO(38, 50, 56, 1),
               fontFamily: 'Inter',
-              fontSize: 28,
+              fontSize: MediaQuery.of(context).size.width*0.04,
               letterSpacing: 0.20000001788139343,
               fontWeight: FontWeight.bold,
               height: 1.400000028610228
@@ -511,7 +519,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
           child: Text('$tempQuantity', textAlign: TextAlign.center, style: TextStyle(
               color: Color.fromRGBO(38, 50, 56, 1),
               fontFamily: 'Inter',
-              fontSize: 20,
+              fontSize: MediaQuery.of(context).size.width*0.04,
               letterSpacing: 0.20000001788139343,
               fontWeight: FontWeight.bold,
               height: 1.400000028610228
@@ -522,7 +530,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
           child: Text('$tempPrice ₹', textAlign: TextAlign.center, style: TextStyle(
               color: Color.fromRGBO(38, 50, 56, 1),
               fontFamily: 'Inter',
-              fontSize: 20,
+              fontSize: MediaQuery.of(context).size.width*0.04,
               letterSpacing: 0.20000001788139343,
               fontWeight: FontWeight.bold,
               height: 1.400000028610228
@@ -569,12 +577,12 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              Icon(FontAwesomeIcons.userAlt,color: Colors.red,size: 40,),
+                              Icon(FontAwesomeIcons.userAlt,color: Colors.red,size: MediaQuery.of(context).size.width*0.07,),
                               SizedBox(height: 10,),
                               Text('My Profile', textAlign: TextAlign.center, style: TextStyle(
                                   color: Colors.red,
                                   fontFamily: 'Inter',
-                                  fontSize: 20,
+                                  fontSize: MediaQuery.of(context).size.width*0.03,
                                   letterSpacing: 0.20000001788139343,
                                   fontWeight: FontWeight.normal,
                                   height: 1.400000028610228
@@ -618,12 +626,12 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              Icon(Icons.list_alt_outlined,color: Colors.red,size: 40,),
+                              Icon(Icons.list_alt_outlined,color: Colors.red,size: MediaQuery.of(context).size.width*0.07,),
                               SizedBox(height: 10,),
                               Text('Proceed For Billing', textAlign: TextAlign.center, style: TextStyle(
                                   color: Colors.red,
                                   fontFamily: 'Inter',
-                                  fontSize: 20,
+                                  fontSize: MediaQuery.of(context).size.width*0.03,
                                   letterSpacing: 0.20000001788139343,
                                   fontWeight: FontWeight.normal,
                                   height: 1.400000028610228
@@ -655,12 +663,12 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              Icon(Icons.inventory,color: Colors.red,size: 40,),
+                              Icon(Icons.inventory,color: Colors.red,size: MediaQuery.of(context).size.width*0.07,),
                               SizedBox(height: 10,),
                               Text('Add From Inventory', textAlign: TextAlign.center, style: TextStyle(
                                   color: Colors.red,
                                   fontFamily: 'Inter',
-                                  fontSize: 20,
+                                  fontSize: MediaQuery.of(context).size.width*0.03,
                                   letterSpacing: 0.20000001788139343,
                                   fontWeight: FontWeight.normal,
                                   height: 1.400000028610228
@@ -686,12 +694,12 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              Icon(Icons.keyboard,color: Colors.red,size: 40,),
+                              Icon(Icons.keyboard,color: Colors.red,size: MediaQuery.of(context).size.width*0.07,),
                               SizedBox(height: 10,),
                               Text('Number Pad', textAlign: TextAlign.center, style: TextStyle(
                                   color: Colors.red,
                                   fontFamily: 'Inter',
-                                  fontSize: 20,
+                                  fontSize: MediaQuery.of(context).size.width*0.03,
                                   letterSpacing: 0.20000001788139343,
                                   fontWeight: FontWeight.normal,
                                   height: 1.400000028610228
@@ -787,7 +795,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
               child: Center(child: Text(s, textAlign: TextAlign.left, style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'Inter',
-                  fontSize: 28,
+                  fontSize: MediaQuery.of(context).size.width*0.03,
                   letterSpacing: 0.20000001788139343,
                   fontWeight: FontWeight.bold,
                   height: 1.400000028610228
@@ -819,7 +827,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
             child: Center(child: Text(s, textAlign: TextAlign.left, style: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Inter',
-                fontSize: 28,
+                fontSize: MediaQuery.of(context).size.width*0.03,
                 letterSpacing: 0.20000001788139343,
                 fontWeight: FontWeight.bold,
                 height: 1.400000028610228
@@ -848,7 +856,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
             child: Center(child: Text(s, textAlign: TextAlign.left, style: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Inter',
-                fontSize: 28,
+                fontSize: MediaQuery.of(context).size.width*0.03,
                 letterSpacing: 0.20000001788139343,
                 fontWeight: FontWeight.bold,
                 height: 1.400000028610228
@@ -875,7 +883,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
             child: Center(child: Text(plusMode?"-":"+",textAlign: TextAlign.left, style: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Inter',
-                fontSize: 28,
+                fontSize: MediaQuery.of(context).size.width*0.03,
                 letterSpacing: 0.20000001788139343,
                 fontWeight: FontWeight.bold,
                 height: 1.400000028610228
@@ -914,7 +922,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
             child: Center(child: Text(s, textAlign: TextAlign.left, style: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Inter',
-                fontSize: 28,
+                fontSize: MediaQuery.of(context).size.width*0.03,
                 letterSpacing: 0.20000001788139343,
                 fontWeight: FontWeight.bold,
                 height: 1.400000028610228

@@ -55,8 +55,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(height: 20,),
-                    WidgetHelper().CustomPhoneNumberTextField("Enter Customer Phone Number",Icons.perm_contact_cal_sharp,customerPhoneNumberTextEditingController,showPhoneNumberError,phoneNumberErrorMessage),
-                    WidgetHelper().CustomTextField("Enter Customer Email Id",Icons.email_outlined,customerEmailIdTextEditingController,showEmailIdError,emailIdErrorMessage),
+                    WidgetHelper().CustomPhoneNumberTextField("Enter Customer Phone Number",Icons.perm_contact_cal_sharp,customerPhoneNumberTextEditingController,showPhoneNumberError,phoneNumberErrorMessage,context),
+                    WidgetHelper().CustomTextField("Enter Customer Email Id",Icons.email_outlined,customerEmailIdTextEditingController,showEmailIdError,emailIdErrorMessage,context),
                     SizedBox(height: 20,),
                     ElevatedButton(
                       onPressed: () async {

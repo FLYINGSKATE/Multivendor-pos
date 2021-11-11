@@ -78,20 +78,20 @@ class _POSOutletListState extends State<POSOutletList> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(doc["POSUserName"], textAlign: TextAlign.center, style: TextStyle(
+                  Expanded(child:Text(doc["POSUserName"], textAlign: TextAlign.start, style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'Intern',
-                      fontSize: 40,
+                      fontSize: MediaQuery.of(context).size.width*0.04,
                       letterSpacing: 0.20000001788139343,
                       height: 1.400000028610228
-                  ),),
-                  Text(doc["POSUserContact"], textAlign: TextAlign.center, style: TextStyle(
+                  ),)),
+                  Expanded(child:Text(doc["POSUserContact"], textAlign: TextAlign.end, style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'Intern',
-                      fontSize: 40,
+                      fontSize: MediaQuery.of(context).size.width*0.04,
                       letterSpacing: 0.20000001788139343,
                       height: 1.400000028610228
-                  ),),
+                  ),)),
                 ],
               ),
               Divider(height: 1,color: Colors.white,)

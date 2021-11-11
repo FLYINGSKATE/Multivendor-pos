@@ -344,13 +344,13 @@ class _AddShopState extends State<AddShop> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(height: 20,),
-                    WidgetHelper().CustomTextField("Enter Shop Name",Icons.perm_contact_cal_sharp,_shopNameTextEditingController,showShopNameErrorMessgae,shopNameErrorMessage),
+                    WidgetHelper().CustomTextField("Enter Shop Name",Icons.perm_contact_cal_sharp,_shopNameTextEditingController,showShopNameErrorMessgae,shopNameErrorMessage,context),
                     SizedBox(height: 20,),
-                    WidgetHelper().CustomTextField("Enter Shop Login Name",Icons.person,_shopLoginEditingController,showShopLoginErrorMessage,shopShopLoginErrorMesage),
+                    WidgetHelper().CustomTextField("Enter Shop Login Name",Icons.person,_shopLoginEditingController,showShopLoginErrorMessage,shopShopLoginErrorMesage,context),
                     SizedBox(height: 20,),
-                    WidgetHelper().CustomTextField("Enter Shop Password",Icons.remove_red_eye,_shopPasswordTextEditingController,showShopPasswordErrorMessage,shopUserPasswordErrorMessage),
+                    WidgetHelper().CustomTextField("Enter Shop Password",Icons.remove_red_eye,_shopPasswordTextEditingController,showShopPasswordErrorMessage,shopUserPasswordErrorMessage,context),
                     SizedBox(height: 20,),
-                    WidgetHelper().CustomTextField("Enter Shop Contact Number",Icons.phone,_shopShopContactNumberEditingController,showShopContactNumberErrorMessage,shopContactNumberErrorMessage),
+                    WidgetHelper().CustomTextField("Enter Shop Contact Number",Icons.phone,_shopShopContactNumberEditingController,showShopContactNumberErrorMessage,shopContactNumberErrorMessage,context),
                     SizedBox(height: 20,),
                   TextField(
                     controller: _razorPayApiTextEditingController,

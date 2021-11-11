@@ -167,7 +167,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     "Enter Price", Icons.money,
                                     _productPriceTextEditingController,
                                     _showProductPriceErrorMessage,
-                                    _productPriceErrorMessage)),
+                                    _productPriceErrorMessage,context)),
                             SizedBox(width: 20,),
                             Expanded(
                                 child: WidgetHelper().CustomNumberTextField(
@@ -175,7 +175,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     Icons.all_inbox_rounded,
                                     _productStockTextEditingController,
                                     _showProductStockErrorMessage,
-                                    _productStockErrorMessage)),
+                                    _productStockErrorMessage,context)),
                           ],
                         ),
                         SizedBox(height: 20,),
@@ -183,7 +183,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             "Enter Seller Contact Number", Icons.phone,
                             _productSellerContactNumberTextEditingController,
                             _showProductSellerContactNumberErrorMessage,
-                            productSellerContactNumberErrorMessage),
+                            productSellerContactNumberErrorMessage,context),
                         SizedBox(height: 20,),
                         SizedBox(height: 10,),
                         ElevatedButton(
@@ -269,7 +269,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             style: TextStyle(
                                 color: Colors.white,
                                 fontFamily: 'MPLUSRounded',
-                                fontSize: 40,
+                                fontSize: MediaQuery.of(context).size.width*0.03,
                                 letterSpacing: 0.20000001788139343,
                                 fontWeight: FontWeight.bold,
                                 height: 1.400000028610228

@@ -60,11 +60,11 @@ class _AddPOSOutletScreenState extends State<AddPOSOutletScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(height: 20,),
-                    WidgetHelper().CustomTextField("Enter POS User Name",Icons.perm_contact_cal_sharp,_posUserNameTextEditingController,_posUserNameErrorMessage,shopNameErrorMessage),
+                    WidgetHelper().CustomTextField("Enter POS User Name",Icons.perm_contact_cal_sharp,_posUserNameTextEditingController,_posUserNameErrorMessage,shopNameErrorMessage,context),
                     SizedBox(height: 20,),
-                    WidgetHelper().CustomTextField("Enter POS User Password",Icons.remove_red_eye,_posPasswordTextEditingController,_posPasswordErrorMessage,shopUserPasswordErrorMessage),
+                    WidgetHelper().CustomTextField("Enter POS User Password",Icons.remove_red_eye,_posPasswordTextEditingController,_posPasswordErrorMessage,shopUserPasswordErrorMessage,context),
                     SizedBox(height: 20,),
-                    WidgetHelper().CustomTextField("Enter POS User Contact Number",Icons.phone,_posContactNumberTextEditingController,_pOSContactNumberErrorMessage,shopContactNumberErrorMessage),
+                    WidgetHelper().CustomTextField("Enter POS User Contact Number",Icons.phone,_posContactNumberTextEditingController,_pOSContactNumberErrorMessage,shopContactNumberErrorMessage,context),
                     SizedBox(height: 20,),
                     ElevatedButton(
                       onPressed: () async {
