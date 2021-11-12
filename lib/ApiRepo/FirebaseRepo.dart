@@ -128,36 +128,54 @@ class FirebaseRepo {
 
   Future<String> validatePOSUser(String shopName,String userName , String password) async {
     Map posUserDetails = {};
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection(shopName).doc("POSOutlets").collection(userName).get();
-    if (querySnapshot.docs.length == 0) {
+    DocumentSnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance.collection("/ShopList").doc(shopName).collection("POSOutlets").doc(userName).get();
+    if (!querySnapshot.exists) {
       //doesnt exist
       print("No POS Outlet Found.");
       return "No POS Outlet Found.";
     }
     else{
-      for (int i = 0; i < querySnapshot.docs.length; i++) {
-        //Check if Password is right;
-        var a = querySnapshot.docs[i];
-        //Product p = Product.fromJson(a.data() as Map<String,dynamic>);
-        print(a.data());
-        print(a.data().runtimeType);
-        posUserDetails = Map<String, dynamic>.from(a.data() as Map<String,dynamic>);
-        if(posUserDetails["POSPassword"] == password  ){
-          print("Login Successful");
-          return "Login Successful";
-        }
-        else{
-          print("Wrong Password");
-          return "Wrong Password";
-        }
+      posUserDetails = Map<String, dynamic>.from(querySnapshot.data() as Map<String,dynamic>);
+      print(posUserDetails.toString());
+      if(posUserDetails["POSUserPassword"] == password  ){
+        print("Login Successful");
+        return "Login Successful";
+      }
+      else{
+        print("Wrong Password");
+        return "Wrong Password";
       }
     }
     print("SOMETHING WENT WRONG");
     return "Something Went Wrong";
   }
 
-  validateShopUser(){
-
+  Future<String> validateShopUser(String shopName,String userName , String password) async {
+    Map shopDetails = {};
+    DocumentSnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance.collection("/ShopList").doc(shopName).get();
+    if (!querySnapshot.exists) {
+      //doesnt exist
+      print("No Shop Found");
+      return "No Shop Found";
+    }
+    else{
+      shopDetails = Map<String, dynamic>.from(querySnapshot.data() as Map<String,dynamic>);
+      print(shopDetails.toString());
+      if(shopDetails["ShopLoginName"] == userName){
+        if(shopDetails["ShopPassword"]==password ){
+          print("Login Successful");
+          return "Login Successful";
+        }
+        print("Wrong Password");
+        return "Wrong Password";
+      }
+      else{
+        print("Wrong Shop User name");
+        return "Wrong Shop User name";
+      }
+    }
+    print("SOMETHING WENT WRONG");
+    return "Something Went Wrong";
   }
 
   ///Admin Methods API CALLS

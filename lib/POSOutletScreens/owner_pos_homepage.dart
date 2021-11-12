@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:rdipos/AddFromInventory.dart';
+import 'package:rdipos/ApiRepo/FirebaseRepo.dart';
 import 'package:rdipos/POSOutletScreens/pos_home_page.dart';
 import 'package:rdipos/ShopOwnerScreens/ShopOwnerHomePage.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
@@ -136,23 +137,26 @@ class _ShopOwnerLoginState extends State<ShopOwnerLogin> {
                     CustomTextField("Password",Icons.remove_red_eye,_passwordTextEditingController,showPasswordErrorMessage,passwordErrorMessage),
                     SizedBox(height: 10,),
                     ElevatedButton(
-                      onPressed: ()  {
-                        //await databaseRef.child("Shops").orderByChild("Username").equalTo(_userNameTextEditingController.text).once().then((DataSnapshot snapshot){
-                          //Map<dynamic, dynamic> values = snapshot.value;
-                          //values.forEach((key,values) {
-                            if("admin"==_passwordTextEditingController.text){
-                              print("Shop Login Successfully");
-                              pushNewScreen(
-                                context,
-                                withNavBar: false,
-                                screen: ShopOwnerHomePage(shopName: widget.shopName,),
-                              );
-                            }
-                            else{
-                              showPasswordErrorMessage = true;
-                              setState(() {});
-                            }
-                          },
+                      onPressed: ()  async {
+                        String result = await FirebaseRepo().validateShopUser(widget.shopName, _userNameTextEditingController.text,_passwordTextEditingController.text);
+                        print("Shop LOGIN Results : "+result);
+                        if(result=="Login Successful"){
+                          print("Shop Login Successfully");
+                          Map<String,dynamic> map={};
+                          pushNewScreen(context, withNavBar: false, screen: ShopOwnerHomePage(shopName: widget.shopName,),);
+                        }
+                        else if(result == "Wrong Shop User name"){
+                          userErrorMessage = result;
+                          showUsernameErrorMessgae = true;
+                          setState(() {});
+                        }
+                        else{
+                          showUsernameErrorMessgae = false;
+                          passwordErrorMessage = result;
+                          showPasswordErrorMessage = true;
+                          setState(() {});
+                        }
+                      },
                       child: Text('Login'),
                       style: ElevatedButton.styleFrom(
                         shape: StadiumBorder(),
@@ -270,16 +274,16 @@ class _POSLoginState extends State<POSLogin> {
                     WidgetHelper().CustomTextField("Password",Icons.remove_red_eye,_passwordTextEditingController,showPasswordErrorMessage,passwordErrorMessage,context),
                     SizedBox(height: 10,),
                     ElevatedButton(
-                      onPressed: ()  {
-                        //await databaseRef.child("Shops").orderByChild("Username").equalTo(_userNameTextEditingController.text).once().then((DataSnapshot snapshot){
-                          //Map<dynamic, dynamic> values = snapshot.value;
-                          //values.forEach((key,values) {
-                            if("admin"==_passwordTextEditingController.text){
+                      onPressed: ()  async {
+                            String result = await FirebaseRepo().validatePOSUser(widget.shopName, _userNameTextEditingController.text,_passwordTextEditingController.text);
+                            print("POS OUTLET LOGIN : "+result);
+                            if(result=="Login Successful"){
                               print("OUTLET Login Successfully");
                               Map<String,dynamic> map={};
                               pushNewScreen(context, withNavBar: false, screen: POSHomePage(shopName: widget.shopName,bill: [],),);
                             }
                             else{
+                              passwordErrorMessage = result;
                               showPasswordErrorMessage = true;
                               setState(() {});
                             }
