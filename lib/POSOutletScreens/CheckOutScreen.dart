@@ -2,6 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:rdipos/ApiRepo/FirebaseRepo.dart';
 import 'package:rdipos/ApiRepo/payments.dart';
+import 'package:rdipos/POSOutletScreens/pos_home_page.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -56,7 +57,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   children: [
                     SizedBox(height: 20,),
                     WidgetHelper().CustomPhoneNumberTextField("Enter Customer Phone Number",Icons.perm_contact_cal_sharp,customerPhoneNumberTextEditingController,showPhoneNumberError,phoneNumberErrorMessage,context),
-                    WidgetHelper().CustomTextField("Enter Customer Email Id",Icons.email_outlined,customerEmailIdTextEditingController,showEmailIdError,emailIdErrorMessage,context),
+                    //WidgetHelper().CustomTextField("Enter Customer Email Id",Icons.email_outlined,customerEmailIdTextEditingController,showEmailIdError,emailIdErrorMessage,context),
                     SizedBox(height: 20,),
                     ElevatedButton(
                       onPressed: () async {
@@ -65,7 +66,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ///Navigate to Rayzor Pay & On Payment Success Navigate to Billing Section
                             String apiKey = await FirebaseRepo().fetchShopAPIKey(widget.shopName);
                             print("Price You have to pay : "+widget.price.toString());
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => Webpayment(mobile:customerPhoneNumberTextEditingController.text.trim(),email: customerEmailIdTextEditingController.text.trim(),price: widget.price*100, name: 'AshrafK.Salim', shopName:widget.shopName, shopApiKey: apiKey ,)),);
+                            //Add Bill to Database
+                            //Navigator.push(context, MaterialPageRoute(builder: (context) => Webpayment(mobile:customerPhoneNumberTextEditingController.text.trim(),email: customerEmailIdTextEditingController.text.trim(),price: widget.price*100, name: 'AshrafK.Salim', shopName:widget.shopName, shopApiKey: apiKey ,)),);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => POSHomePage(shopName: widget.shopName, bill: [],)));
                           }
                           else{
                             showPhoneNumberError = true;
