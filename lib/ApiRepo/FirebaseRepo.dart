@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class FirebaseRepo {
 
-  final String SHOP_NAME = 'Aflatoon General Store';
+
 
   ///Shop Keeper Methods & POS User API CALLS
   Future<String> AddPOSOutlet(String POSUserName,String POSPassword,String POSContactNumber,String shopName) async{
@@ -15,7 +15,7 @@ class FirebaseRepo {
     }
     else{
       //final QuerySnapshot result = await await FirebaseFirestore.instance.collection('/ShopList').get();
-      await FirebaseFirestore.instance.collection("/ShopList").doc("Apunki Dukaan").collection("POSOutlets").doc("$POSUserName").set(
+      await FirebaseFirestore.instance.collection("/ShopList").doc(shopName).collection("POSOutlets").doc("$POSUserName").set(
           {
             "POSUserName" : POSUserName,
             "POSUserContact" : POSContactNumber,
@@ -56,7 +56,7 @@ class FirebaseRepo {
     print("New Stock Values : "+nStockValue.toString());
     amountOFSKU = nStockValue.toString();
     print("Removing $amountOFSKU Stock from $ProductName");
-    await FirebaseFirestore.instance.collection("/ShopList").doc("Apunki Dukaan").collection("ProductList").doc("$ProductName").update(
+    await FirebaseFirestore.instance.collection("/ShopList").doc(shopName).collection("ProductList").doc("$ProductName").update(
         {
           "ProductStock" : amountOFSKU,
         }).whenComplete((){
