@@ -8,8 +8,11 @@ import 'package:rdipos/Utility/widget_helper.dart';
 class CheckoutScreen extends StatefulWidget {
   final String shopName;
   final int price;
+  final List<Map> bill;
 
-  const CheckoutScreen({Key? key,required this.shopName,required this.price}) : super(key: key);
+  final String posName;
+
+  const CheckoutScreen({Key? key,required this.shopName,required this.price,required this.bill,required this.posName}) : super(key: key);
 
   @override
   _CheckoutScreenState createState() => _CheckoutScreenState();
@@ -56,24 +59,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(height: 20,),
-                    WidgetHelper().CustomPhoneNumberTextField("Enter Customer Phone Number",Icons.perm_contact_cal_sharp,customerPhoneNumberTextEditingController,showPhoneNumberError,phoneNumberErrorMessage,context),
-                    //WidgetHelper().CustomTextField("Enter Customer Email Id",Icons.email_outlined,customerEmailIdTextEditingController,showEmailIdError,emailIdErrorMessage,context),
+                    //WidgetHelper().CustomPhoneNumberTextField("Enter Customer Phone Number",Icons.perm_contact_cal_sharp,customerPhoneNumberTextEditingController,showPhoneNumberError,phoneNumberErrorMessage,context),
+                    WidgetHelper().CustomTextField("Enter Customer Name",Icons.person,customerEmailIdTextEditingController,showEmailIdError,emailIdErrorMessage,context),
                     SizedBox(height: 20,),
                     ElevatedButton(
                       onPressed: () async {
-                        if(EmailValidator.validate(customerEmailIdTextEditingController.text.trim())){
-                          if(customerPhoneNumberTextEditingController.text.trim().length>=10){
-                            ///Navigate to Rayzor Pay & On Payment Success Navigate to Billing Section
-                            String apiKey = await FirebaseRepo().fetchShopAPIKey(widget.shopName);
-                            print("Price You have to pay : "+widget.price.toString());
-                            //Add Bill to Database
-                            //Navigator.push(context, MaterialPageRoute(builder: (context) => Webpayment(mobile:customerPhoneNumberTextEditingController.text.trim(),email: customerEmailIdTextEditingController.text.trim(),price: widget.price*100, name: 'AshrafK.Salim', shopName:widget.shopName, shopApiKey: apiKey ,)),);
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => POSHomePage(shopName: widget.shopName, bill: [],)));
-                          }
-                          else{
-                            showPhoneNumberError = true;
-                            setState(() {});
-                          }
+                        if(customerEmailIdTextEditingController.text.trim()!=""){
+                          //String apiKey = await FirebaseRepo().fetchShopAPIKey(widget.shopName);
+                          await FirebaseRepo().MakeNewBill(customerEmailIdTextEditingController.text.trim(), widget.shopName,widget.bill , widget.price.toString(),widget.posName);
+                          print("Price You have to pay : "+widget.price.toString());
+                          //Add Bill to Database
+                          //Navigator.push(context, MaterialPageRoute(builder: (context) => Webpayment(mobile:customerPhoneNumberTextEditingController.text.trim(),email: customerEmailIdTextEditingController.text.trim(),price: widget.price*100, name: 'AshrafK.Salim', shopName:widget.shopName, shopApiKey: apiKey ,)),);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => POSHomePage(shopName: widget.shopName, bill: [], posName: widget.posName,)));
                         }
                         else{
                           showEmailIdError = true;

@@ -77,7 +77,7 @@ class _AddPOSOutletScreenState extends State<AddPOSOutletScreen> {
                         if(((_posUserNameTextEditingController.text.isNotEmpty)
                             &&(_posPasswordTextEditingController.text.isNotEmpty ))&& (_posContactNumberTextEditingController.text.isNotEmpty)
                         ){
-                          String ADDPOSOUTLETMESSAGE  = await FirebaseRepo().AddPOSOutlet(_posUserNameTextEditingController.text.trim(),_posPasswordTextEditingController.text.trim(),_posContactNumberTextEditingController.text.trim());
+                          String ADDPOSOUTLETMESSAGE  = await FirebaseRepo().AddPOSOutlet(_posUserNameTextEditingController.text.trim(),_posPasswordTextEditingController.text.trim(),_posContactNumberTextEditingController.text.trim(),widget.shopName);
                           print(ADDPOSOUTLETMESSAGE);
                           Color messageColor = Colors.red;
                           if(ADDPOSOUTLETMESSAGE=="Congratulations! POS Outlet Added Successfully!"){

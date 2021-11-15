@@ -22,7 +22,9 @@ class POSHomePage extends StatefulWidget {
   final String shopName;
   final List<Map<String,dynamic>> bill;
 
-  const POSHomePage({Key? key,required this.bill, required this.shopName}) : super(key: key);
+  final String posName;
+
+  const POSHomePage({Key? key,required this.bill, required this.shopName,required this.posName}) : super(key: key);
 
   @override
   _POSHomePageState createState() => _POSHomePageState();
@@ -614,7 +616,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                             //}
                             if(kIsWeb){
                               print("You have to pay :"+(totalPriceToPay*100).toString()),
-                              Navigator.push(context, MaterialPageRoute(builder: (context) =>CheckoutScreen(shopName: widget.shopName, price: totalPriceToPay.toInt(),)))
+                              Navigator.push(context, MaterialPageRoute(builder: (context) =>CheckoutScreen(shopName: widget.shopName, price: totalPriceToPay.toInt(), posName: widget.posName, bill: widget.bill,)))
                             }
                             else{
                               openCheckout()
@@ -655,7 +657,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
                         child: MaterialButton(
                           onPressed: () => {Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => AddFromInventoryPanel(shopName:widget.shopName,bill:widget.bill)),
+                            MaterialPageRoute(builder: (context) => AddFromInventoryPanel(shopName:widget.shopName,bill:widget.bill, posName: widget.posName,)),
                           )},
                           color: Colors.black,
                           padding: EdgeInsets.all(10.0),

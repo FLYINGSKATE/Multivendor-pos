@@ -3,7 +3,9 @@ import 'package:rdipos/POSOutletScreens/pos_home_page.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
 
 class PaymentSuccessScreen extends StatefulWidget {
-  const PaymentSuccessScreen({Key? key}) : super(key: key);
+  final String posName;
+
+  const PaymentSuccessScreen({Key? key, required this.posName}) : super(key: key);
 
   @override
   _PaymentSuccessScreenState createState() => _PaymentSuccessScreenState();
@@ -33,7 +35,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
              crossAxisAlignment: CrossAxisAlignment.center,
              children: [
                WidgetHelper().CustomPrimaryRoundedButton("Back to HomePage", (() => Navigator.of(context).pushReplacement(MaterialPageRoute(
-                   builder: (BuildContext context) => POSHomePage(bill: [], shopName: "Apunki Dukaan",))))),
+                   builder: (BuildContext context) => POSHomePage(bill: [], shopName: "Apunki Dukaan", posName: widget.posName,))))),
                WidgetHelper().CustomPrimaryRoundedButton("Print Bill", (() => print("Hola"))),
              ],
            ),

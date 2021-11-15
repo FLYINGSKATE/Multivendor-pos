@@ -17,7 +17,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection("ShopList").doc("Apunki Dukaan").collection("ProductList").snapshots(),
+        stream: FirebaseFirestore.instance.collection("ShopList").doc(widget.shopName).collection("ProductList").snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot>
         snapshot) {
           if (!snapshot.hasData) return new Text("There is no Inventory in Stock!");

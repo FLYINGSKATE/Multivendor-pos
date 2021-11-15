@@ -18,7 +18,9 @@ class Webpayment extends StatelessWidget{
 
   final String description = "A Partner shop of RDI Digital!";
 
-  Webpayment({required this.name,required this.price,this.image,required this.mobile,required this.email, required this.shopName,required this.shopApiKey});
+  final String posName;
+
+  Webpayment({required this.name,required this.price,this.image,required this.mobile,required this.email, required this.shopName,required this.shopApiKey, required this.posName});
 
 
   @override
@@ -35,7 +37,7 @@ class Webpayment extends StatelessWidget{
           //Do here Success Thing
           //Return to POS Home Page
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (BuildContext context) => POSHomePage(bill: [], shopName: this.shopName,)));
+              builder: (BuildContext context) => POSHomePage(bill: [], shopName: this.shopName, posName: this.posName,)));
         }
         else{
           print("AAPKE RAYZOR PAY KE SAATH YEH HUA : "+element.data);

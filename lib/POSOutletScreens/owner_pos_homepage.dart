@@ -280,7 +280,7 @@ class _POSLoginState extends State<POSLogin> {
                             if(result=="Login Successful"){
                               print("OUTLET Login Successfully");
                               Map<String,dynamic> map={};
-                              pushNewScreen(context, withNavBar: false, screen: POSHomePage(shopName: widget.shopName,bill: [],),);
+                              pushNewScreen(context, withNavBar: false, screen: POSHomePage(shopName: widget.shopName,bill: [], posName:_userNameTextEditingController.text,),);
                             }
                             else{
                               passwordErrorMessage = result;

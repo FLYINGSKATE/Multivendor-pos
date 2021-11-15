@@ -11,7 +11,9 @@ class AddFromInventoryPanel extends StatefulWidget {
   final String shopName;
   final List<Map<String,dynamic>> bill;
 
-  const AddFromInventoryPanel({Key? key,required this.shopName, required this.bill}) : super(key: key);
+  final posName;
+
+  const AddFromInventoryPanel({Key? key,required this.shopName, required this.bill,required this.posName}) : super(key: key);
 
   @override
   _AddFromInventoryPanelState createState() => _AddFromInventoryPanelState();
@@ -35,7 +37,7 @@ class _AddFromInventoryPanelState extends State<AddFromInventoryPanel> {
         floatingActionButton:showDoneButton?FloatingActionButton.extended(
           onPressed: (){
             Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (BuildContext context) => POSHomePage(bill: bill, shopName: widget.shopName,)));
+                builder: (BuildContext context) => POSHomePage(bill: bill, shopName: widget.shopName, posName: widget.posName,)));
           },
           backgroundColor: Colors.red,
           icon: Icon(Icons.check),

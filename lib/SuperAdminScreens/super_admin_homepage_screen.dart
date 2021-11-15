@@ -352,14 +352,14 @@ class _AddShopState extends State<AddShop> {
                     SizedBox(height: 20,),
                     WidgetHelper().CustomTextField("Enter Shop Contact Number",Icons.phone,_shopShopContactNumberEditingController,showShopContactNumberErrorMessage,shopContactNumberErrorMessage,context),
                     SizedBox(height: 20,),
-                  TextField(
+                  /*TextField(
                     controller: _razorPayApiTextEditingController,
                     style: TextStyle(color: Colors.grey[100],fontSize: 20,fontFamily: 'MPLUSRounded1c'),
                     decoration: InputDecoration(
                       suffixIcon: Padding(padding: EdgeInsets.all(10),child:TextButton(
                         child: Text("Register",style:TextStyle(color: Colors.grey[100],fontSize: 20,fontFamily: 'MPLUSRounded1c')),
                         onPressed: (){
-                          html.window.open("https://razorpay.com/","Razor Pay API");
+                          //html.window.open("https://razorpay.com/","Razor Pay API");
                         },
                       )),
                         errorStyle: TextStyle(
@@ -388,7 +388,7 @@ class _AddShopState extends State<AddShop> {
                         hintText: "Enter Shop Razor Pay Api Key",
                         fillColor: Colors.black
                     ),
-                  ),
+                  ),*/
                     SizedBox(height: 20,),
                     SizedBox(
                       height:350,
@@ -430,16 +430,16 @@ class _AddShopState extends State<AddShop> {
                         showShopPasswordErrorMessage = _shopPasswordTextEditingController.text.isEmpty;
                         showShopAddressErrorMessage =  _shopAddressTextEditingController.text.isEmpty;
                         showShopContactNumberErrorMessage =  _shopShopContactNumberEditingController.text.isEmpty;
-                        showRazorPayApiErrorMessage =  _razorPayApiTextEditingController.text.isEmpty;
+                        //showRazorPayApiErrorMessage =  _razorPayApiTextEditingController.text.isEmpty;
 
                         setState(() {
 
                         });
 
                         if(((_shopNameTextEditingController.text.isNotEmpty&&_shopLoginEditingController.text.isNotEmpty)
-                        &&(_shopPasswordTextEditingController.text.isNotEmpty && _shopAddressTextEditingController.text.isNotEmpty ))&& (_shopShopContactNumberEditingController.text.isNotEmpty && _razorPayApiTextEditingController.text.isNotEmpty)
+                        &&(_shopPasswordTextEditingController.text.isNotEmpty && _shopAddressTextEditingController.text.isNotEmpty ))&& (_shopShopContactNumberEditingController.text.isNotEmpty)
                         ){
-                          String ADDSHOPMESSAGE  = await FirebaseRepo().AddNewShop(_shopNameTextEditingController.text.trim(),_shopLoginEditingController.text.trim(),_shopPasswordTextEditingController.text.trim(),_shopShopContactNumberEditingController.text.trim(),_shopAddressTextEditingController.text.trim(),_razorPayApiTextEditingController.text.trim());
+                          String ADDSHOPMESSAGE  = await FirebaseRepo().AddNewShop(_shopNameTextEditingController.text.trim(),_shopLoginEditingController.text.trim(),_shopPasswordTextEditingController.text.trim(),_shopShopContactNumberEditingController.text.trim(),_shopAddressTextEditingController.text.trim(),"dummyy");
                           print(ADDSHOPMESSAGE);
                           Color messageColor = Colors.red;
 
@@ -452,7 +452,7 @@ class _AddShopState extends State<AddShop> {
                           _shopPasswordTextEditingController.text = "";
                           _shopAddressTextEditingController.text = "";
                           _shopShopContactNumberEditingController.text  = "";
-                          _razorPayApiTextEditingController.text = "";
+                          //_razorPayApiTextEditingController.text = "";
 
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: Colors.black,

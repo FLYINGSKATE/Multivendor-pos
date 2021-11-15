@@ -6,9 +6,9 @@ class FirebaseRepo {
   final String SHOP_NAME = 'Aflatoon General Store';
 
   ///Shop Keeper Methods & POS User API CALLS
-  Future<String> AddPOSOutlet(String POSUserName,String POSPassword,String POSContactNumber) async{
+  Future<String> AddPOSOutlet(String POSUserName,String POSPassword,String POSContactNumber,String shopName) async{
     print("Adding New POS Outlet");
-    bool posOutletAlreadyExists = await POSAlreadyExsists(POSUserName);
+    bool posOutletAlreadyExists = await POSAlreadyExsists(POSUserName,shopName);
     print("POS Outlet Already Exists"+posOutletAlreadyExists.toString());
     if(posOutletAlreadyExists){
       return "Oh! No POS Outlet Already Exists";
@@ -25,8 +25,8 @@ class FirebaseRepo {
     return "Congratulations! POS Outlet Added Successfully!";
   }
 
-  Future<bool> POSAlreadyExsists(String POSUserName) async{
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("/ShopList").doc("Apunki Dukaan").collection("ProductList").where("POSUserName", isEqualTo: "$POSUserName").get();
+  Future<bool> POSAlreadyExsists(String POSUserName,String shopName) async{
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("/ShopList").doc(shopName).collection("ProductList").where("POSUserName", isEqualTo: "$POSUserName").get();
     if(querySnapshot.docs.isEmpty){
       return false;
     }
@@ -321,6 +321,30 @@ class FirebaseRepo {
           }).whenComplete((){ return "Congratulations! Product Added Successfully!";}).onError((error, stackTrace){ return "Oops ! Something Went Wrong!";});
     }
     return "Congratulations! Product Added Successfully!";
+  }
+
+  Future<List<String>> POSOutletList(String shopName) async{
+    List<String> posOutletList = [];
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance.collection("ShopList").doc(shopName).collection("POSOutlets").get();
+    for(int i = 0;i<querySnapshot.size;i++){
+      posOutletList.add(querySnapshot.docs.elementAt(i).data()["POSUserName"].toString());
+    }
+    return posOutletList;
+  }
+
+
+  Future<String> MakeNewBill(String customerName,String shopName,List<Map> productList,String totalPrice,String posName) async {
+    print("Creating New Bill");
+    await FirebaseFirestore.instance.collection("/ShopList").doc(shopName).collection("POSOutlets").doc("$posName").collection("Bills").doc().set(
+        {
+          "CustomerName":customerName,
+          "ShopName" : shopName,
+          "POSName" : posName,
+          "Cart":productList,
+          "Date" : DateTime.now(),
+          "TotalPrice" : totalPrice,
+        }).whenComplete((){ return "Bill Generated Successfully";}).onError((error, stackTrace){ return "Oops ! Something Went Wrong!";});
+    return "Bill Generated Successfully";
   }
 
   Future<String> fetchShopAPIKey(String ShopName) async {

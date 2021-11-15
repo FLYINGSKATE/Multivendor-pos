@@ -18,7 +18,7 @@ class _POSOutletListState extends State<POSOutletList> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection("ShopList").doc("Apunki Dukaan").collection("POSOutlets").snapshots(),
+        stream: FirebaseFirestore.instance.collection("ShopList").doc(widget.shopName).collection("POSOutlets").snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot>
         snapshot) {
           if (!snapshot.hasData) return new Text("There is no POS Outlets in Your Shop!");

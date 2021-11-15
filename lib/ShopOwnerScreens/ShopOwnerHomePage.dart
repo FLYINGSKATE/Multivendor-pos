@@ -14,6 +14,7 @@ import 'package:rdipos/ShopOwnerScreens/ShopOwnerTabs/InventoryListScreen.dart';
 import 'package:rdipos/Utility/widget_helper.dart';
 
 import 'ShopOwnerTabs/AddPOSOutletScreen.dart';
+import 'ShopOwnerTabs/BillsListScreen.dart';
 import 'ShopOwnerTabs/POSOutletListScreen.dart';
 
 class ShopOwnerHomePage extends StatefulWidget {
@@ -70,6 +71,7 @@ class _ShopOwnerHomePageState extends State<ShopOwnerHomePage> {
       InventoryScreen(shopName: widget.shopName,),
       POSOutletList(shopName: widget.shopName,),
       AddProductScreen(shopName: widget.shopName,),
+      BillsListScreen(shopName:widget.shopName),
     ];
   }
 
@@ -83,7 +85,7 @@ class _ShopOwnerHomePageState extends State<ShopOwnerHomePage> {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.list_dash),
+        icon: Icon(CupertinoIcons.cube_box_fill),
         title: ("Inventory"),
         activeColorSecondary: Colors.white,
         textStyle: TextStyle(fontFamily: "MPLUSRounded"),
@@ -99,8 +101,15 @@ class _ShopOwnerHomePageState extends State<ShopOwnerHomePage> {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.add_circled),
+        icon: Icon(CupertinoIcons.add_circled_solid),
         title: ("Add Product"),
+        textStyle: TextStyle(fontFamily: "MPLUSRounded"),
+        activeColorPrimary: CupertinoColors.systemRed,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: Icon(CupertinoIcons.square_list_fill),
+        title: ("Bills"),
         textStyle: TextStyle(fontFamily: "MPLUSRounded"),
         activeColorPrimary: CupertinoColors.systemRed,
         inactiveColorPrimary: CupertinoColors.systemGrey,
