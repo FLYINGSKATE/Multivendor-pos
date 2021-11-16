@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 
 class FirebaseRepo {
 
-
-
   ///Shop Keeper Methods & POS User API CALLS
   Future<String> AddPOSOutlet(String POSUserName,String POSPassword,String POSContactNumber,String shopName) async{
     print("Adding New POS Outlet");

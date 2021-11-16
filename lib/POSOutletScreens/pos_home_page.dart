@@ -72,6 +72,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
 
 
 
+
   void _requestPosBarcodeTextFieldFocusNode() {
     setState(() {
       FocusScope.of(context).requestFocus(_posBarcodeTextFieldFocusNode);
@@ -112,9 +113,25 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
     });
   }
 
+  void CalculateTotal(){
+    if(widget.bill.isEmpty){
+      print("Cannot Calculate Total For Empty Cart.");
+      return;
+    }
+    int totalPriceInInt = 0;
+    int totalQuantityInt = 0;
+    widget.bill.forEach((e){
+      totalQuantityInt +=int.parse(e["ProductStock"]);
+      totalPriceInInt += int.parse(e["Product Price"])*int.parse(e["ProductStock"]);
+    });
+    totalPrice = totalPriceInInt.toString();
+    totalQuantity = totalQuantityInt.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
+    print("RELOADED SET STATE NE KIYE");
+    CalculateTotal();
     return Scaffold(
       appBar:AppBar(
         leading: IconButton(
@@ -420,7 +437,11 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
   }
 
   Widget Product(String productName,int productPrice,int productStock){
-    return GestureDetector(onTap:(){
+    return InkWell(onTap:(){
+      print("SELECTED");
+      setState(() {
+
+      });
       ///When Product Selected Make all the temp calculated value to Zero
       tempQuantity = "0";
       tempPrice = 0;
@@ -428,9 +449,12 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
       selectedProductName = productName;
       selectedProductQuantity = productStock;
       selectedProductPrice = productPrice;
-      print(productName);} ,child:Column(
+
+      print(productName);},child:Column(
       children: [
-        Row(
+        Container(
+            color: (selectedProductName==productName)?Colors.black12:Colors.transparent,
+            child:Row(
           children: [
             Expanded(
               flex: 5,
@@ -466,7 +490,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
               ),),
             ),
           ],
-        ),
+        )),
         //Messages to show are : -
         //Added 10 more banana to bill
         //Removed 10 banana from bill
@@ -502,7 +526,6 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
   }
 
   Widget TotalFooter(){
-    totalPriceToPay = tempPrice;
     return Row(
       children: [
         Expanded(
@@ -529,7 +552,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
         ),
         Expanded(
           flex: 2,
-          child: Text('$tempPrice ₹', textAlign: TextAlign.center, style: TextStyle(
+          child: Text('$totalPrice ₹', textAlign: TextAlign.center, style: TextStyle(
               color: Color.fromRGBO(38, 50, 56, 1),
               fontFamily: 'Inter',
               fontSize: MediaQuery.of(context).size.width*0.04,
@@ -949,18 +972,52 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
         //As it is a positive operation we will add stock quantity even if it is 0 product in bill
         //First Check if there is any stock in database.
         String stockUnitInDatabase = await FirebaseRepo().FetchStockUnit(widget.shopName, selectedProductName);
-        if(stockUnitInDatabase!="0" && int.parse(stockUnitInDatabase) > int.parse(s)){
+        if(stockUnitInDatabase!="0" && int.parse(stockUnitInDatabase) >= int.parse(s)){
           bool isStockRemovedSuccessfully = await FirebaseRepo().RemoveStock(widget.shopName, selectedProductName, s.toString());
           if(isStockRemovedSuccessfully){
             ///Remove it from Bill map too here
             AddStockUnitsToBill(int.parse(s));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              backgroundColor: Colors.black,
+              content: Text(
+                "Added $s of $selectedProductName to bill",
+                style: TextStyle(color:Colors.green, letterSpacing: 0.5),
+              ),
+            ));
             setState(() {});
             return;
           }
           else{
             selectedProductQuantity = initialSelectedProductQuantity;
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              backgroundColor: Colors.black,
+              content: Text(
+                "$selectedProductName",
+                style: TextStyle(color:Colors.red, letterSpacing: 0.5),
+              ),
+            ));
           }
         }
+        else if(stockUnitInDatabase=="0"){
+          print("$selectedProductName is out of Stock");
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: Colors.black,
+            content: Text(
+              "$selectedProductName is out of Stock",
+              style: TextStyle(color:Colors.red, letterSpacing: 0.5),
+            ),
+          ));
+        }
+        else if(int.parse(stockUnitInDatabase) < int.parse(s)){
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: Colors.black,
+            content: Text(
+              "There is only $stockUnitInDatabase of $selectedProductName in Stock",
+              style: TextStyle(color:Colors.red, letterSpacing: 0.5),
+            ),
+          ));
+        }
+
 
         if(tempQuantity!="0" && int.parse(tempQuantity) > 0){
           String remainingStock = await FirebaseRepo().FetchStockUnit(widget.shopName, selectedProductName);
@@ -1080,6 +1137,7 @@ class _POSHomePageState extends State<POSHomePage> with TickerProviderStateMixin
         print(widget.bill[i]["Product Price"].toString() + "After Updating Price");
       }
     }
+    ///Charging init
     setState(() {});
   }
 

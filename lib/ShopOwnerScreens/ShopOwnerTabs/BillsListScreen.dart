@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rdipos/ApiRepo/FirebaseRepo.dart';
+import 'package:rdipos/ShopOwnerScreens/BillDetailsScreen.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:rdipos/Utility/widget_helper.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
@@ -41,7 +42,13 @@ class _BillsListScreenState extends State<BillsListScreen> {
     print(snapshot.data!.docs.toList());
     return snapshot.data!.docs.map((doc) => new Container(
         color: Colors.black,
-        child: Container(
+        child: InkWell(onTap: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => BillDetailsScreen( doc: doc,)),
+          );
+        }
+        ,child:Container(
           width: MediaQuery.of(context).size.width,
           padding: EdgeInsets.only(left:10,right: 10),
           child:Column(
@@ -77,7 +84,7 @@ class _BillsListScreenState extends State<BillsListScreen> {
               Divider(height: 1,color: Colors.white,)
             ],
           ),
-        ),)
+        ),))
     ).toList();
   }
 

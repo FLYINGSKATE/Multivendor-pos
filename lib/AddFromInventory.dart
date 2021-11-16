@@ -101,8 +101,8 @@ class _AddFromInventoryPanelState extends State<AddFromInventoryPanel> {
                           ],
                         ),
                         SfSlider(
-                          min: 1.0,
-                          max: int.parse(doc["ProductStock"])+10,
+                          min: 1,
+                          max: int.parse(doc["ProductStock"]),
                           value: _value,
                           interval: int.parse(doc["ProductStock"])>50?(int.parse(doc["ProductStock"])/10):1,
                           stepSize: 1,

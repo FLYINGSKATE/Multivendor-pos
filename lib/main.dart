@@ -48,8 +48,8 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primaryColor: Colors.black,
       ),
-      home: MainHomePage()
-      //home: MainHomePage(),
+      //home: POSHomePage(posName: 'AndeRam@rdipos.com', shopName: 'Apunki Dukaan', bill: [],)
+      home: ShopOwnerHomePage(shopName: 'Apunki Dukaan',),
     );
   }
 }
