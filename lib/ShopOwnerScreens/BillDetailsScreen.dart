@@ -13,6 +13,6 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: Text(widget.doc[""]),);
+    return Container(child: Text(""),);
   }
 }

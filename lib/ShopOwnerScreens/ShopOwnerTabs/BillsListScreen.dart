@@ -20,6 +20,7 @@ class _BillsListScreenState extends State<BillsListScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Column(
       children: [
         for ( String posName in PosOutletList )
@@ -28,6 +29,7 @@ class _BillsListScreenState extends State<BillsListScreen> {
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot>
           snapshot) {
           if (!snapshot.hasData) return new Text("There is no Bills in $posName");
+          //if(snapshot.data!.docs[]=="")return Container();
                 return new ListView(
                     shrinkWrap: true,children: getExpenseItems(snapshot));
           }),
@@ -39,7 +41,7 @@ class _BillsListScreenState extends State<BillsListScreen> {
     print("Length of the Snapshot");
     print(snapshot.data!.docs.length);
     double _value = 0.0;
-    print(snapshot.data!.docs.toList());
+    print(snapshot.data!.docs.first.get("CustomerName"));
     return snapshot.data!.docs.map((doc) => new Container(
         color: Colors.black,
         child: InkWell(onTap: (){
@@ -74,13 +76,7 @@ class _BillsListScreenState extends State<BillsListScreen> {
                   ),),
                 ],
               ),
-              Expanded(child:Text("Total :"+doc["totalPrice"], textAlign: TextAlign.start, style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Intern',
-                  fontSize:  MediaQuery.of(context).size.width*0.02,
-                  letterSpacing: 0.20000001788139343,
-                  height: 1.400000028610228
-              ),)),
+
               Divider(height: 1,color: Colors.white,)
             ],
           ),
